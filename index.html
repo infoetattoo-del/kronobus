@@ -687,6 +687,12 @@ function resetSeg(k,i){if(!data[k]||!data[k].seg[i])return;data[k].seg[i]={s:nul
 function clearHours(k){if(!data[k])return;data[k].seg=[{s:null,e:null}];data[k].note='';saveData();renderDay();}
 loadData();
 render();
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').then(function(){
+    console.log('Kronobus: mode hors-ligne actif');
+  }).catch(function(e){console.log('SW non disponible',e);});
+}
 </script>
 </body>
 </html>
