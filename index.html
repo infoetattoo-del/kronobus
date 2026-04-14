@@ -13,7 +13,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 html,body{height:100%;background:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',sans-serif}
 body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh}
-.app{width:100%;max-width:390px;background:#fff;min-height:100vh;padding:env(safe-area-inset-top,44px) 20px calc(env(safe-area-inset-bottom,20px)+24px);position:relative;margin:0 auto}
+.app{width:100%;max-width:390px;background:#fff;min-height:100vh;padding:env(safe-area-inset-top,44px) 20px calc(env(safe-area-inset-bottom,0px)+80px);position:relative;margin:0 auto}
 
 /* NAV */
 .nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
@@ -21,10 +21,17 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 .nav-btn:active{opacity:.5}
 .nav-title{font-size:17px;font-weight:600;color:#1d1d1f;letter-spacing:-.3px;text-align:center;flex:1}
 
-/* TABS */
-.tabs{display:flex;gap:0;background:#f0f0f5;border-radius:12px;padding:3px;margin-bottom:20px;border:1px solid #dcdce4}
-.tab{flex:1;text-align:center;font-size:13px;font-weight:500;padding:7px 1px;border-radius:9px;border:none;background:none;cursor:pointer;color:#3a3a3c;font-family:inherit;letter-spacing:-.1px}
-.tab.on{background:#fff;color:#1d1d1f;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.14),0 .5px 1px rgba(0,0,0,.1)}
+/* BOTTOM TAB BAR */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;background:rgba(255,255,255,.92);border-top:0.5px solid #c8c8d0;display:flex;align-items:stretch;z-index:500;padding-bottom:env(safe-area-inset-bottom,0px);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.tbtab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;border:none;background:none;cursor:pointer;font-family:inherit;gap:3px;min-height:52px}
+.tbtab:active{opacity:.6}
+.tb-ico{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.tb-lbl{font-size:10px;font-weight:500;color:#8e8e93;letter-spacing:-.1px}
+.tbtab.on .tb-lbl{color:#1b2cc1;font-weight:700}
+.tb-svg{width:22px;height:22px;stroke:#8e8e93;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tbtab.on .tb-svg{stroke:#1b2cc1}
+.tb-svg-fill{width:22px;height:22px;fill:#8e8e93}
+.tbtab.on .tb-svg-fill{fill:#1b2cc1}
 
 /* SCREENS */
 .screen{display:none}.screen.on{display:block}
@@ -54,7 +61,7 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 .dur-chip{display:inline-flex;align-items:center;gap:4px;background:#f0f0f5;border-radius:20px;padding:5px 12px;font-size:12px;color:#3a3a3c;border:1px solid #dcdce4}
 .dur-chip b{font-weight:700;color:#1d1d1f}
 
-/* DELETE */
+/* DELETE / DOTS */
 .del-btn{position:absolute;top:13px;right:13px;background:none;border:none;cursor:pointer;color:#adadb8;font-size:22px;padding:0 4px;line-height:1;font-family:inherit}
 .del-btn:active{color:#FF3B30}
 .dots-btn{background:none;border:none;cursor:pointer;color:#adadb8;font-size:22px;padding:4px 6px;line-height:1;font-family:inherit;border-radius:8px;letter-spacing:2px}
@@ -78,7 +85,7 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 /* SECTION LABEL */
 .sec-lbl{font-size:12px;font-weight:700;color:#3a3a3c;margin-bottom:6px;margin-top:16px;letter-spacing:-.1px}
 
-/* NOTE INPUT — fond blanc, texte visible */
+/* NOTE INPUT */
 .note-inp{width:100%;border:1.5px solid #c8c8d0;border-radius:12px;padding:10px 13px;font-size:14px;font-family:inherit;background:#fff;color:#1d1d1f;resize:none}
 .note-inp:focus{outline:none;border-color:#1b2cc1}
 .note-inp::placeholder{color:#adadb8}
@@ -105,6 +112,24 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 .stat{background:#f5f5f7;border-radius:12px;padding:13px 8px;text-align:center;border:1px solid #dcdce4}
 .stat-v{font-size:20px;font-weight:300;color:#1d1d1f;letter-spacing:-.5px}
 .stat-l{font-size:10px;color:#48484a;margin-top:3px;font-weight:700;letter-spacing:.2px}
+
+/* WEEK VIEW */
+.week-day-row{display:flex;align-items:center;padding:12px 14px;border-radius:14px;margin-bottom:8px;background:#fff;border:1.5px solid #dcdce4;cursor:pointer}
+.week-day-row:active{background:#f5f5f7}
+.week-day-row.today-row{border-color:#1b2cc1;background:#f0f2fc}
+.week-day-row.we-row{border-color:#FF3B3030}
+.wdr-left{flex:1}
+.wdr-name{font-size:14px;font-weight:700;color:#1d1d1f}
+.wdr-date{font-size:12px;color:#6e6e73;margin-top:1px}
+.wdr-right{text-align:right}
+.wdr-total{font-size:18px;font-weight:600;color:#1d1d1f;letter-spacing:-.5px}
+.wdr-total.empty{color:#d0d0d8;font-weight:400;font-size:15px}
+.wdr-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:3px;display:inline-block}
+.wdr-badge.we{background:#FF3B3015;color:#b91c1c}
+.wdr-badge.night{background:#5856D615;color:#3730a3}
+.week-total-card{background:#1b2cc1;border-radius:16px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.wtc-lbl{font-size:12px;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.3px;text-transform:uppercase}
+.wtc-val{font-size:28px;font-weight:700;color:#fff;letter-spacing:-1px}
 
 /* MONTH CALENDAR */
 .mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
@@ -149,7 +174,7 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 /* MODAL */
 .modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:1000;align-items:flex-end;justify-content:center}
 .modal-ov.open{display:flex}
-.msheet{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:430px;padding:16px 16px calc(env(safe-area-inset-bottom,16px)+20px);border-top:1px solid #dcdce4}
+.msheet{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:390px;padding:16px 16px calc(env(safe-area-inset-bottom,16px)+20px);border-top:1px solid #dcdce4}
 .mhandle{width:36px;height:4px;background:#c8c8d0;border-radius:2px;margin:0 auto 16px}
 .mtitle{font-size:16px;font-weight:700;text-align:center;margin-bottom:16px;color:#1d1d1f;letter-spacing:-.3px}
 
@@ -203,18 +228,39 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
     <span class="nav-title" id="navTitle"></span>
     <button class="nav-btn" id="nextBtn">&#8250;</button>
   </div>
-  <div class="tabs">
-    <button class="tab on"  onclick="setView('day')">Jour</button>
-    <button class="tab"     onclick="setView('month')">Mois</button>
-    <button class="tab"     onclick="setView('year')">Ann&#233;e</button>
-    <button class="tab"     onclick="setView('report')">Rapport</button>
-    <button class="tab"     onclick="openExport()">Export</button>
-  </div>
   <div class="screen on" id="sc-day"></div>
+  <div class="screen"    id="sc-week"></div>
   <div class="screen"    id="sc-month"></div>
   <div class="screen"    id="sc-year"></div>
   <div class="screen"    id="sc-report"></div>
 </div>
+
+<nav class="tabbar">
+  <button class="tbtab on" id="tb-day" onclick="setView('day')">
+    <div class="tb-ico"><svg class="tb-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+    <span class="tb-lbl">Jour</span>
+  </button>
+  <button class="tbtab" id="tb-week" onclick="setView('week')">
+    <div class="tb-ico"><svg class="tb-svg" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+    <span class="tb-lbl">Semaine</span>
+  </button>
+  <button class="tbtab" id="tb-month" onclick="setView('month')">
+    <div class="tb-ico"><svg class="tb-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg></div>
+    <span class="tb-lbl">Mois</span>
+  </button>
+  <button class="tbtab" id="tb-year" onclick="setView('year')">
+    <div class="tb-ico"><svg class="tb-svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <span class="tb-lbl">Ann&#233;e</span>
+  </button>
+  <button class="tbtab" id="tb-report" onclick="setView('report')">
+    <div class="tb-ico"><svg class="tb-svg" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+    <span class="tb-lbl">Rapport</span>
+  </button>
+  <button class="tbtab" id="tb-export" onclick="openExport()">
+    <div class="tb-ico"><svg class="tb-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
+    <span class="tb-lbl">Export</span>
+  </button>
+</nav>
 
 <div class="modal-ov" id="modal-ov" onclick="ovClick(event)">
   <div class="msheet">
@@ -246,16 +292,20 @@ function isWE(d){return d.getDay()===0||d.getDay()===6;}
 function isNight(key){var d=data[key];if(!d||!d.seg)return false;return d.seg.some(function(g){if(!g.e)return false;var t=pt(g.e);return t.h>=22||t.h<5;});}
 function getWeek(d){var j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
 function fmtTS(ts){var d=new Date(ts);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+function getMondayOf(d){var day=d.getDay(),diff=d.getDate()-(day===0?6:day-1);return new Date(d.getFullYear(),d.getMonth(),diff);}
 
 function setView(v){
   view=v;
-  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('on',['day','month','year','report'][i]===v);});
+  var tabs=['day','week','month','year','report','export'];
+  tabs.forEach(function(t){var el=document.getElementById('tb-'+t);if(el)el.classList.remove('on');});
+  var active=document.getElementById('tb-'+v);if(active)active.classList.add('on');
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
   var sc=document.getElementById('sc-'+v);if(sc)sc.classList.add('on');
   render();
 }
 function render(){
   if(view==='day')renderDay();
+  else if(view==='week')renderWeek();
   else if(view==='month')renderMonth();
   else if(view==='year')renderYear();
   else if(view==='report')renderReport();
@@ -264,18 +314,21 @@ function render(){
 function updateNav(){
   var n=document.getElementById('navTitle');
   if(view==='day')n.textContent=DL[cur.getDay()]+' '+cur.getDate()+' '+MO[cur.getMonth()];
+  else if(view==='week'){var mo=getMondayOf(cur);n.textContent='Semaine '+getWeek(mo)+' \u2014 '+MO[mo.getMonth()]+' '+mo.getFullYear();}
   else if(view==='month')n.textContent=MO[cur.getMonth()]+' '+cur.getFullYear();
   else if(view==='year')n.textContent=cur.getFullYear();
   else n.textContent=MO[cur.getMonth()]+' '+cur.getFullYear();
 }
 document.getElementById('prevBtn').addEventListener('click',function(){
   if(view==='day')cur.setDate(cur.getDate()-1);
+  else if(view==='week')cur.setDate(cur.getDate()-7);
   else if(view==='month'||view==='report')cur.setMonth(cur.getMonth()-1);
   else cur.setFullYear(cur.getFullYear()-1);
   render();
 });
 document.getElementById('nextBtn').addEventListener('click',function(){
   if(view==='day')cur.setDate(cur.getDate()+1);
+  else if(view==='week')cur.setDate(cur.getDate()+7);
   else if(view==='month'||view==='report')cur.setMonth(cur.getMonth()+1);
   else cur.setFullYear(cur.getFullYear()+1);
   render();
@@ -378,6 +431,42 @@ function dlPhoto(k,i){
   var name='bus_defaut_'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'_'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0')+'.jpg';
   var a=document.createElement('a');a.href=p.data;a.download=name;a.click();
   showToast('Photo t\u00e9l\u00e9charg\u00e9e \u2713',1800);
+}
+
+function renderWeek(){
+  var monday=getMondayOf(cur);
+  var totW=0,workedW=0,weHW=0,nightDW=0;
+  var h='';
+  for(var i=0;i<7;i++){
+    var dt=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+i);
+    var key=dk(dt);var t=totalDay(key);
+    var we=isWE(dt);var night=isNight(key);
+    var isT=dk(dt)===dk(today);
+    if(t>0){totW+=t;workedW++;if(we)weHW+=t;if(night)nightDW++;}
+    h+='<div class="week-day-row'+(isT?' today-row':'')+(we?' we-row':'')+'" onclick="gotoDay('+dt.getFullYear()+','+dt.getMonth()+','+dt.getDate()+')">';
+    h+='<div class="wdr-left">';
+    h+='<div class="wdr-name">'+DL[dt.getDay()]+'</div>';
+    h+='<div class="wdr-date">'+dt.getDate()+' '+MO[dt.getMonth()]+'</div>';
+    h+='</div>';
+    h+='<div class="wdr-right">';
+    h+='<div class="wdr-total'+(t?'':' empty')+'">'+(t?fmtD(t):'--')+'</div>';
+    if(we||night){h+='<div>';if(we)h+='<span class="wdr-badge we">W-E</span>';if(night)h+='<span class="wdr-badge night">Nuit</span>';h+='</div>';}
+    h+='</div>';
+    h+='</div>';
+  }
+  var topCard='<div class="week-total-card"><div><div class="wtc-lbl">Total semaine</div><div class="wtc-val">'+fmtD(totW)+'</div></div>';
+  topCard+='<div style="text-align:right"><div class="wtc-lbl">Jours trav.</div><div style="font-size:24px;font-weight:700;color:#fff">'+workedW+'</div></div></div>';
+  if(weHW>0){
+    topCard+='<div class="stat-row"><div class="stat"><div class="stat-v" style="color:#b91c1c">'+fmtD(weHW)+'</div><div class="stat-l">H. WEEK-END</div></div>';
+    topCard+='<div class="stat"><div class="stat-v" style="color:#b91c1c">'+(workedW?fmtD(Math.round(totW/workedW)):'--')+'</div><div class="stat-l">MOY. JOUR</div></div>';
+    if(nightDW>0)topCard+='<div class="stat"><div class="stat-v" style="color:#3730a3">'+nightDW+'</div><div class="stat-l">NUITS</div></div>';
+    topCard+='</div>';
+  } else {
+    topCard+='<div class="stat-row"><div class="stat"><div class="stat-v">'+fmtD(workedW>0?Math.round(totW/workedW):0)+'</div><div class="stat-l">MOY. JOUR</div></div>';
+    if(nightDW>0)topCard+='<div class="stat"><div class="stat-v" style="color:#3730a3">'+nightDW+'</div><div class="stat-l">NUITS</div></div>';
+    topCard+='</div>';
+  }
+  document.getElementById('sc-week').innerHTML=topCard+h;
 }
 
 function renderMonth(){
