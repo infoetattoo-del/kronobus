@@ -57,6 +57,8 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 /* DELETE */
 .del-btn{position:absolute;top:13px;right:13px;background:none;border:none;cursor:pointer;color:#adadb8;font-size:22px;padding:0 4px;line-height:1;font-family:inherit}
 .del-btn:active{color:#FF3B30}
+.dots-btn{background:none;border:none;cursor:pointer;color:#adadb8;font-size:22px;padding:4px 6px;line-height:1;font-family:inherit;border-radius:8px;letter-spacing:2px}
+.dots-btn:active{background:#f0f0f5}
 
 /* PUNCH BUTTONS */
 .pbtn{width:100%;padding:16px;border-radius:14px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px;letter-spacing:-.2px}
@@ -289,8 +291,10 @@ function renderDay(){
   rec.seg.forEach(function(sg,i){
     var dur=calcDur(sg.s,sg.e);
     h+='<div class="card">';
-    if(rec.seg.length>1)h+='<button class="del-btn" onclick="delSeg(\''+key+'\','+i+')">&#215;</button>';
-    h+='<div class="card-lbl">'+(i===0?'Amplitude principale':'Amplitude '+(i+1))+'</div>';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+    h+='<div class="card-lbl" style="margin-bottom:0">'+(i===0?'Amplitude principale':'Amplitude '+(i+1))+'</div>';
+    h+='<button class="dots-btn" onclick="showSegMenu(\''+key+'\','+i+')">&#8943;</button>';
+    h+='</div>';
     h+='<div class="trow">';
     h+='<div class="tblk" onclick="editT(\''+key+'\','+i+',\'s\')"><div class="tblk-lbl">D\u00c9BUT</div><div class="tblk-val'+(sg.s?'':' emp')+'">'+(sg.s||'--:--')+'</div></div>';
     h+='<div class="arrow">\u2192</div>';
@@ -302,7 +306,7 @@ function renderDay(){
   var ps=pSt(key);
   if(ps==='none')h+='<button class="pbtn pin" onclick="pIn(\''+key+'\')">Pointer l\'arriv\u00e9e</button>';
   else if(ps==='in')h+='<button class="pbtn pout" onclick="pOut(\''+key+'\')">Pointer le d\u00e9part</button>';
-  else h+='<button class="pbtn pdone">Heures enregistr\u00e9es \u2713</button><button class="pbtn" style="background:#fff;color:#FF3B30;border:1.5px solid #FF3B30;font-size:14px;font-weight:600;margin-top:-4px" onclick="clearHours(\''+key+'\')">Effacer les heures</button>';
+  else h+='<button class="pbtn pdone">Heures enregistr\u00e9es \u2713</button><div style="text-align:right;margin-top:2px;margin-bottom:4px"><button onclick="clearHours(\''+key+'\')" style="background:none;border:none;color:#FF3B30;font-size:12px;font-family:inherit;cursor:pointer;padding:4px 0;opacity:.75">Effacer toutes les heures</button></div>';
 
   h+='<button class="add-btn" onclick="addSeg(\''+key+'\')">';
   h+='<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#1b2cc1" stroke-width="1.5"/><path d="M10 6v8M6 10h8" stroke="#1b2cc1" stroke-width="1.5" stroke-linecap="round"/></svg>';
@@ -581,6 +585,16 @@ function exportTXT(){
 }
 function dlBlob(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
 
+function showSegMenu(k,i){
+  var rec=data[k];if(!rec)return;
+  var isOnly=rec.seg.length===1;
+  var b='<div style="display:flex;flex-direction:column;gap:8px">';
+  b+='<button class="exp-btn" onclick="resetSeg(\''+k+'\','+i+');closeModal()"><div class="eico" style="background:#FF3B3015;font-size:16px">&#128465;</div><div><div>Effacer les heures</div><div class="exp-desc">Remet début et fin à zéro</div></div></button>';
+  if(!isOnly)b+='<button class="exp-btn" onclick="delSeg(\''+k+'\','+i+');closeModal()"><div class="eico" style="background:#FF3B3015;font-size:16px">&#10005;</div><div><div style="color:#FF3B30">Supprimer cette amplitude</div><div class="exp-desc">Supprime complètement ce bloc</div></div></button>';
+  b+='</div><button class="mcancel" style="width:100%;margin-top:8px" onclick="closeModal()">Annuler</button>';
+  openModal('Options amplitude '+(i+1),b);
+}
+function resetSeg(k,i){if(!data[k]||!data[k].seg[i])return;data[k].seg[i]={s:null,e:null};saveData();renderDay();}
 function clearHours(k){if(!data[k])return;data[k].seg=[{s:null,e:null}];data[k].note='';saveData();renderDay();}
 loadData();
 render();
