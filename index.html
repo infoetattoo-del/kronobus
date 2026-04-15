@@ -42,7 +42,7 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 /* DAY HEADER */
 .day-hdr{text-align:center;margin-bottom:18px;position:relative}
 .day-illus{width:100%;height:160px;margin-bottom:0;border-radius:20px;overflow:hidden;position:relative}
-.day-illus img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
+.day-illus img{width:100%;height:100%;object-fit:cover;object-position:center 35%}
 .day-date-overlay{position:absolute;bottom:0;left:0;right:0;padding:12px 18px 16px;background:linear-gradient(transparent,rgba(0,0,0,.4))}
 .day-big{font-size:110px;font-weight:800;line-height:1;color:#fff;letter-spacing:-4px;text-shadow:0 2px 10px rgba(0,0,0,.25)}
 .day-month{font-size:16px;font-weight:600;color:rgba(255,255,255,.9);letter-spacing:-.2px;margin-top:-4px}
@@ -383,7 +383,7 @@ function renderDay(){
   var dayNames=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   var monthNames=['Jan','F\u00e9v','Mar','Avr','Mai','Juin','Juil','Ao\u00fbt','Sep','Oct','Nov','D\u00e9c'];
   var h='<div class="day-hdr">';
-    h+='<div class="day-illus"><img src="+window._KBIMG+" alt=""></div>';
+    h+='<div class="day-illus"><img src="'+window._KBIMG+'" style="width:100%;height:100%;object-fit:cover;object-position:center 35%" alt=""></div>';
   h+='<div class="day-date-overlay"><div class="day-big">'+cur.getDate()+'</div>';
   h+='<div class="day-month">'+dayNames[cur.getDay()]+' — '+MO[cur.getMonth()]+' '+cur.getFullYear()+'</div>';
   if(we)h+='<span class="badge badge-we">Week-end</span>';
@@ -489,8 +489,8 @@ function dlPhoto(k,i){
 
 function getIllusBanner(title,sub){
   var s=sub?'<div style="font-size:13px;font-weight:500;color:rgba(255,255,255,.8);margin-top:2px">'+sub+'</div>':'';
-  return '<div style="position:relative;width:100%;height:110px;border-radius:18px;overflow:hidden;margin-bottom:16px">'+
-    '<img src="'+window._KBIMG+'" style="width:100%;height:100%;object-fit:cover;object-position:center 40%">'+
+  return '<div style="position:relative;width:100%;height:160px;border-radius:20px;overflow:hidden;margin-bottom:16px">'+
+    '<img src="'+window._KBIMG+'" style="width:100%;height:100%;object-fit:cover;object-position:center 35%">'+
     '<div style="position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.45))">'+
     '<div style="position:absolute;bottom:12px;left:16px">'+
     '<div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;text-shadow:0 2px 6px rgba(0,0,0,.3)">'+title+'</div>'+s+
@@ -541,7 +541,7 @@ function renderMonth(){
   var first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();
   var totM=0,workedD=0,weH=0,weD=0,nightD=0;
   var _nav=document.getElementById('navTitle').textContent;
-  var h=getIllusBanner(_nav)+''<div class="mgrid">';
+  var h=getIllusBanner(_nav)+'<div class="mgrid">';
   DS.forEach(function(d){h+='<div class="dlbl">'+d+'</div>';});
   for(var i=0;i<first;i++)h+='<div class="cday om"><span class="cdn">'+(prev-first+i+1)+'</span></div>';
   for(var d=1;d<=days;d++){
@@ -579,7 +579,7 @@ function renderMonth(){
 function renderYear(){
   var y=cur.getFullYear();
   var _nav=document.getElementById('navTitle').textContent;
-  var h=getIllusBanner(_nav)+''<div class="ygrid">';
+  var h=getIllusBanner(_nav)+'<div class="ygrid">';
   for(var mo=0;mo<12;mo++){
     var days=new Date(y,mo+1,0).getDate(),first=new Date(y,mo,1).getDay();
     h+='<div class="mmth" onclick="gotoMonth('+y+','+mo+')"><div class="mm-title">'+MO[mo]+'</div><div class="mmgrid">';
@@ -612,7 +612,7 @@ function renderReport(){
   var avg=workedD>0?Math.round(totM/workedD):0;
   var maxW=Math.max.apply(null,Object.values(weekly).concat([1]));
   var _nav=document.getElementById('navTitle').textContent;
-  var h=getIllusBanner(_nav)+''<div class="rep-card"><div class="rep-title">Synth\u00e8se mensuelle</div>';
+  var h=getIllusBanner(_nav)+'<div class="rep-card"><div class="rep-title">Synth\u00e8se mensuelle</div>';
   h+='<div class="rep-row"><span class="rep-key">Total heures</span><span class="rep-val ok">'+fmtD(totM)+'</span></div>';
   h+='<div class="rep-row"><span class="rep-key">Jours travaill\u00e9s</span><span class="rep-val">'+workedD+' j.</span></div>';
   h+='<div class="rep-row"><span class="rep-key">Heures semaine</span><span class="rep-val">'+fmtD(totM-weH)+'</span></div>';
@@ -642,7 +642,7 @@ function renderReport(){
   }
   if(!workedD)h+='<div style="text-align:center;padding:48px 0;color:#adadb8;font-size:14px">Aucune donn\u00e9e ce mois</div>';
   h+='<div class="screen-pad"></div>';
-  document.getElementById('sc-report').innerHTML=getIllusBanner(document.getElementById('navTitle')?document.getElementById('navTitle').textContent:'Rapport')+h;
+  document.getElementById('sc-report').innerHTML=h;
 }
 
 function gotoDay(y,m,d){cur=new Date(y,m,d);setView('day');}
