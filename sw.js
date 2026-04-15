@@ -1,4 +1,4 @@
-var CACHE = 'kronobus-v19';
+var CACHE = 'kronobus-v20';
 var FILES = ['./index.html', './'];
 
 self.addEventListener('install', function(e) {

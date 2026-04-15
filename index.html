@@ -429,6 +429,7 @@ function getKBImg(){
 }
 
 var SK='bushoraires_v2';
+var _pendingImport=null;
 var MO=['Janvier','F\u00e9vrier','Mars','Avril','Mai','Juin','Juillet','Ao\u00fbt','Septembre','Octobre','Novembre','D\u00e9cembre'];
 var DS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 var DL=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
@@ -1005,16 +1006,18 @@ document.getElementById('importInput').addEventListener('change',function(){
       var existing=Object.keys(data).length;
       if(existing>0){
         // Ask user
+        _pendingImport=imported;
         openModal('Restaurer la sauvegarde',
           '<p style="font-size:14px;color:#1d1d1f;margin-bottom:16px">'+
-          'Fusionner avec les données existantes ('+existing+' jours) ou remplacer ?</p>'+
+          'Fusionner avec les donn\u00e9es existantes ('+existing+' jours) ou remplacer ?</p>'+
           '<div style="display:flex;flex-direction:column;gap:8px">'+
-          '<button class="mconfirm" onclick="doImport('+JSON.stringify(JSON.stringify(imported))+',false)">Fusionner</button>'+
-          '<button class="exp-btn" style="justify-content:center;color:#FF3B30;border-color:#FF3B3040" onclick="doImport('+JSON.stringify(JSON.stringify(imported))+',true)">Remplacer tout</button>'+
+          '<button class="mconfirm" onclick="doImport(false)">Fusionner</button>'+
+          '<button class="exp-btn" style="justify-content:center;color:#FF3B30;border-color:#FF3B3040" onclick="doImport(true)">Remplacer tout</button>'+
           '</div><button class="mcancel" style="width:100%;margin-top:8px" onclick="closeModal()">Annuler</button>'
         );
       } else {
-        doImport(JSON.stringify(imported),true);
+        _pendingImport=imported;
+        doImport(true);
       }
     } catch(err){
       showToast('⚠️ Fichier invalide : '+err.message);
@@ -1023,9 +1026,10 @@ document.getElementById('importInput').addEventListener('change',function(){
   reader.readAsText(file);
 });
 
-function doImport(jsonStr, replace){
+function doImport(replace){
   try{
-    var imported=JSON.parse(jsonStr);
+    var imported=_pendingImport;
+    if(!imported){showToast('\u26a0\ufe0f Aucune donn\u00e9e \u00e0 importer');return;}
     if(replace){
       data=imported;
     } else {
