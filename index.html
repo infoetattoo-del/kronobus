@@ -355,6 +355,7 @@ body.dark .total-num{color:#fff}
 <div class="toast" id="toast"></div>
 <div class="splash" id="splash"><div class="splash-letters"><span class="splash-letter" style="animation-delay:0s">K</span><span class="splash-letter" style="animation-delay:0.1s">R</span><span class="splash-letter" style="animation-delay:0.2s">O</span><span class="splash-letter" style="animation-delay:0.3s">N</span><span class="splash-letter" style="animation-delay:0.4s">O</span><span class="splash-letter" style="animation-delay:0.5s">B</span><span class="splash-letter" style="animation-delay:0.6s">U</span><span class="splash-letter" style="animation-delay:0.7s">S</span></div><div class="splash-sub">Gestion des horaires</div></div></div>
 <input type="file" id="camInput" accept="image/*" capture="environment">
+<input type="file" id="importInput" accept=".json,.csv">
 
 <div class="app">
   <div class="nav">
@@ -810,6 +811,9 @@ function openExport(){
   b+='<button class="exp-btn" onclick="shareWhatsApp()"><div class="eico" style="background:#25D36618">&#128233;</div><div><div>WhatsApp</div><div class="exp-desc">Partager le rapport par WhatsApp</div></div></button>';
   b+='<button class="exp-btn" onclick="shareEmail()"><div class="eico" style="background:#1b2cc112">&#9993;&#65039;</div><div><div>Email</div><div class="exp-desc">Envoyer le rapport par email</div></div></button>';
   b+='<div style="height:1px;background:#f0f0f5;margin:4px 0"></div>';
+  b+='<button class="exp-btn" onclick="exportBackup()"><div class="eico" style="background:#5856D615">&#128190;</div><div><div>Sauvegarde complète</div><div class="exp-desc">Toutes les données — restauration possible</div></div></button>';
+  b+='<button class="exp-btn" onclick="triggerImport()"><div class="eico" style="background:#FF950015">&#128228;</div><div><div>Restaurer une sauvegarde</div><div class="exp-desc">Importer un fichier .json de sauvegarde</div></div></button>';
+  b+='<div style="height:1px;background:#f0f0f5;margin:4px 0"></div>';
   b+='<button class="exp-btn" onclick="exportCSV()"><div class="eico" style="background:#34C75918">&#128202;</div><div><div>CSV / Excel</div><div class="exp-desc">Donn\u00e9es brutes du mois courant</div></div></button>';
   b+='<button class="exp-btn" onclick="exportTXT()"><div class="eico" style="background:#1b2cc112">&#128203;</div><div><div>Rapport texte</div><div class="exp-desc">Synth\u00e8se mensuelle compl\u00e8te</div></div></button>';
   b+='</div><button class="mcancel" style="width:100%" onclick="closeModal()">Annuler</button>';
@@ -921,6 +925,77 @@ function shareEmail(){
   var url='mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(txt);
   window.location.href=url;
   closeModal();
+}
+
+
+function exportBackup(){
+  var backup={version:2,exported:new Date().toISOString(),data:data};
+  var y=cur.getFullYear(),m=cur.getMonth();
+  dlBlob(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}),
+    'kronobus_backup_'+y+'_'+(m+1<10?'0'+(m+1):m+1)+'.json');
+  closeModal();
+  showToast('Sauvegarde exportée ✓');
+}
+
+function triggerImport(){
+  closeModal();
+  var i=document.getElementById('importInput');
+  i.value='';
+  i.click();
+}
+
+document.getElementById('importInput').addEventListener('change',function(){
+  var file=this.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var parsed=JSON.parse(e.target.result);
+      var imported=parsed.data||parsed;
+      // Validate: must be an object with date-like keys
+      var keys=Object.keys(imported);
+      if(!keys.length)throw new Error('Fichier vide');
+      var sample=imported[keys[0]];
+      if(!sample.seg)throw new Error('Format invalide');
+      // Merge or replace
+      var existing=Object.keys(data).length;
+      if(existing>0){
+        // Ask user
+        openModal('Restaurer la sauvegarde',
+          '<p style="font-size:14px;color:#1d1d1f;margin-bottom:16px">'+
+          'Fusionner avec les données existantes ('+existing+' jours) ou remplacer ?</p>'+
+          '<div style="display:flex;flex-direction:column;gap:8px">'+
+          '<button class="mconfirm" onclick="doImport('+JSON.stringify(JSON.stringify(imported))+',false)">Fusionner</button>'+
+          '<button class="exp-btn" style="justify-content:center;color:#FF3B30;border-color:#FF3B3040" onclick="doImport('+JSON.stringify(JSON.stringify(imported))+',true)">Remplacer tout</button>'+
+          '</div><button class="mcancel" style="width:100%;margin-top:8px" onclick="closeModal()">Annuler</button>'
+        );
+      } else {
+        doImport(JSON.stringify(imported),true);
+      }
+    } catch(err){
+      showToast('⚠️ Fichier invalide : '+err.message);
+    }
+  };
+  reader.readAsText(file);
+});
+
+function doImport(jsonStr, replace){
+  try{
+    var imported=JSON.parse(jsonStr);
+    if(replace){
+      data=imported;
+    } else {
+      // Merge: imported wins on conflict
+      Object.assign(data, imported);
+    }
+    saveData();
+    render();
+    closeModal();
+    var count=Object.keys(imported).length;
+    showToast(count+' jours restaurés ✓');
+  } catch(e){
+    showToast('⚠️ Erreur import');
+  }
 }
 
 loadData();
