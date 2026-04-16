@@ -1137,7 +1137,7 @@ function renderDay(){
   var ps=pSt(key);
   if(ps==='none')h+='<button class="pbtn pin" onclick="pIn(\''+key+'\')">Pointer l\'arriv\u00e9e</button>';
   else if(ps==='in')h+='<button class="pbtn pout" onclick="pOut(\''+key+'\')">Pointer le d\u00e9part</button>';
-  else else h+='';
+  else h+='';
 
     h+='<button class="pbtn pin" style="margin-top:8px" onclick="addSeg(\''+key+'\')">';
   h+='+ Ajouter un temps de travail</button>';
@@ -1752,26 +1752,23 @@ function getProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY))||
 function saveProfile(p){localStorage.setItem(PROFILE_KEY,JSON.stringify(p));}
 
 function submitOnboard(){
-  var prenom=document.getElementById('ob-prenom').value.trim();
-  var nom=document.getElementById('ob-nom').value.trim();
-  var tel='';
-  var mat=document.getElementById('ob-mat').value.trim();
-  var pin=document.getElementById('ob-pin').value.trim();
-  var ok=true;
-  function setErr(id,errId,show){
-    document.getElementById(id).classList.toggle('err',show);
-    document.getElementById(errId).style.display=show?'block':'none';
-    if(show)ok=false;
-  }
-  var matClean=mat.replace(/\D/g,'');
-  var pinClean=pin.replace(/\D/g,'');
-  setErr('ob-prenom','ob-err-prenom',!prenom);
-  setErr('ob-nom','ob-err-nom',!nom);
-  setErr('ob-mat','ob-err-mat',matClean.length!==4);
-  setErr('ob-pin','ob-err-pin',pinClean.length!==4);
-  if(!ok)return;
-  saveProfile({prenom:prenom,nom:nom,tel:tel,mat:matClean,pin:pinClean});
+  var prenom=(document.getElementById('ob-prenom').value||'').trim();
+  var nom=(document.getElementById('ob-nom').value||'').trim();
+  var mat=(document.getElementById('ob-mat').value||'').replace(/\D/g,'');
+  var pin=(document.getElementById('ob-pin').value||'').replace(/\D/g,'');
+  var errs=[];
+  if(!prenom){document.getElementById('ob-prenom').classList.add('err');document.getElementById('ob-err-prenom').style.display='block';errs.push(1);}
+  else{document.getElementById('ob-prenom').classList.remove('err');document.getElementById('ob-err-prenom').style.display='none';}
+  if(!nom){document.getElementById('ob-nom').classList.add('err');document.getElementById('ob-err-nom').style.display='block';errs.push(1);}
+  else{document.getElementById('ob-nom').classList.remove('err');document.getElementById('ob-err-nom').style.display='none';}
+  if(mat.length!==4){document.getElementById('ob-mat').classList.add('err');document.getElementById('ob-err-mat').style.display='block';errs.push(1);}
+  else{document.getElementById('ob-mat').classList.remove('err');document.getElementById('ob-err-mat').style.display='none';}
+  if(pin.length!==4){document.getElementById('ob-pin').classList.add('err');document.getElementById('ob-err-pin').style.display='block';errs.push(1);}
+  else{document.getElementById('ob-pin').classList.remove('err');document.getElementById('ob-err-pin').style.display='none';}
+  if(errs.length>0)return;
+  saveProfile({prenom:prenom,nom:nom,tel:'',mat:mat,pin:pin});
   document.getElementById('onboard').classList.add('hide');
+  render();
   initDailyHeader();
 }
 
