@@ -313,7 +313,7 @@ body.dark .day-header-name{color:#f0f0f5}
   background:linear-gradient(90deg,#1b2cc1,#7a8fff,#1b2cc1);
   background-size:200% auto;
   -webkit-background-clip:text;background-clip:text;
-  animation:msgShimmer 3s linear infinite}
+  animation:msgShimmer 3s linear infinite;display:block}
 body.dark .day-header-msg{background:linear-gradient(90deg,#7a8fff,#c0caff,#7a8fff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent}
 @keyframes msgShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 body.dark .day-header-msg{color:#8e8e9a}
@@ -487,7 +487,7 @@ body.dark .total-num{color:#fff}
   <div class="ob-err" id="ob-err-pin">Le code doit contenir exactement 4 chiffres</div>
   <button class="ob-btn" onclick="submitOnboard()">C'est parti !</button>
 </div>
-<div class="splash" id="splash"><div class="splash-letters"><span class="splash-letter" style="animation-delay:0s">K</span><span class="splash-letter" style="animation-delay:0.1s">R</span><span class="splash-letter" style="animation-delay:0.2s">O</span><span class="splash-letter" style="animation-delay:0.3s">N</span><span class="splash-letter" style="animation-delay:0.4s">O</span><span class="splash-letter" style="animation-delay:0.5s">B</span><span class="splash-letter" style="animation-delay:0.6s">U</span><span class="splash-letter" style="animation-delay:0.7s">S</span></div><div class="splash-sub">Gestion des horaires</div></div></div>
+<div class="splash" id="splash"><div class="splash-letters"><span class="splash-letter" style="animation-delay:0s">K</span><span class="splash-letter" style="animation-delay:0.1s">R</span><span class="splash-letter" style="animation-delay:0.2s">O</span><span class="splash-letter" style="animation-delay:0.3s">N</span><span class="splash-letter" style="animation-delay:0.4s">O</span><span class="splash-letter" style="animation-delay:0.5s">B</span><span class="splash-letter" style="animation-delay:0.6s">U</span><span class="splash-letter" style="animation-delay:0.7s">S</span></div></div></div>
 <input type="file" id="camInput" accept="image/*" capture="environment">
 <input type="file" id="importInput" accept=".json,.csv" style="position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px">
 
@@ -641,6 +641,7 @@ function renderDay(){
   if(we)h+='<span class="badge badge-we">Week-end</span>';
   if(night)h+='<span class="badge badge-night">Nuit</span>';
   h+='</div></div></div>';
+  h+='<div class="day-header-msg" style="margin-bottom:14px">'+getDayMsg()+'</div>';
 
   var pastelClasses=['card-amp-0','card-amp-1','card-amp-2','card-amp-3','card-amp-4'];
   rec.seg.forEach(function(sg,i){
@@ -1408,10 +1409,7 @@ function getDailyHeaderHTML(){
   var msg=getDayMsg();
   var dark=document.body.classList.contains('dark');
   return '<div class="day-header-bar">'+
-    // Row 1: Logo centered alone
-    '<div class="day-header-logo">KRONOBUS</div>'+
-    // Row 2: Name+matricule left | dark toggle right
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between">'+
       '<div style="display:flex;align-items:center;gap:6px">'+
         '<span style="font-size:13px;font-weight:700;color:'+(dark?'#f0f0f5':'#1d1d1f')+'">'+p.prenom.toUpperCase()+' '+p.nom.toUpperCase().charAt(0)+'.</span>'+
         (p.mat?'<span style="font-size:10px;color:#adadb8;font-weight:700;background:'+(dark?'#2a2a3a':'#f0f0f5')+';border-radius:6px;padding:2px 7px">N°'+p.mat+'</span>':'')+
@@ -1420,8 +1418,6 @@ function getDailyHeaderHTML(){
         '<span style="font-size:14px">'+(dark?'☀️':'🌙')+'</span>'+(dark?'Jour':'Nuit')+
       '</button>'+
     '</div>'+
-    // Row 3: Animated motivational message
-    '<div class="day-header-msg">'+msg+'</div>'+
   '</div>';
 }
 
