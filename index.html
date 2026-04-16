@@ -258,6 +258,67 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 @keyframes subFade{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
 #camInput{display:none}
 
+/* PIN LOCK */
+.pinlock{position:fixed;inset:0;background:#fff;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;gap:0}
+.pinlock.hide{display:none}
+body.dark .pinlock{background:#111118}
+.pin-logo{font-size:38px;font-weight:900;font-style:italic;color:#1b2cc1;letter-spacing:-2px;margin-bottom:4px}
+.pin-name{font-size:15px;color:#6e6e73;margin-bottom:32px}
+body.dark .pin-name{color:#8e8e9a}
+.pin-title{font-size:18px;font-weight:700;color:#1d1d1f;margin-bottom:20px}
+body.dark .pin-title{color:#f0f0f5}
+.pin-dots{display:flex;gap:16px;margin-bottom:32px}
+.pin-dot{width:18px;height:18px;border-radius:50%;border:2px solid #c8c8d0;background:transparent;transition:all .15s}
+.pin-dot.filled{background:#1b2cc1;border-color:#1b2cc1}
+.pin-dot.err{background:#FF3B30;border-color:#FF3B30}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:280px}
+.pin-key{aspect-ratio:1;border-radius:50%;border:none;background:#f5f5f7;font-size:24px;font-weight:500;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#1d1d1f;transition:background .1s}
+.pin-key:active{background:#e0e0e8}
+body.dark .pin-key{background:#1e1e2a;color:#f0f0f5}
+body.dark .pin-key:active{background:#2a2a3a}
+.pin-key.del{font-size:18px;color:#6e6e73}
+.pin-err-msg{font-size:13px;color:#FF3B30;margin-top:16px;min-height:20px;text-align:center}
+
+
+/* ONBOARDING */
+.onboard{position:fixed;inset:0;background:#fff;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:80px 40px 80px;gap:0;overflow-y:auto}
+.onboard.hide{display:none}
+body.dark .onboard{background:#fff}
+.ob-logo{font-size:42px;font-weight:900;font-style:italic;color:#1b2cc1;letter-spacing:-2px;margin-bottom:6px}
+.ob-sub{font-size:13px;color:#8e8e93;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px}
+.ob-title{font-size:22px;font-weight:700;color:#1d1d1f;margin-bottom:6px;text-align:center}
+body.dark .ob-title{color:#1d1d1f}
+.ob-desc{font-size:14px;color:#6e6e73;text-align:center;margin-bottom:28px;line-height:1.6}
+.ob-field{width:100%;max-width:300px;margin-bottom:14px}
+.ob-label{font-size:12px;font-weight:700;color:#6e6e73;letter-spacing:.4px;margin-bottom:6px;display:flex;justify-content:space-between}
+.ob-label span{font-weight:400;color:#adadb8}
+.ob-input{width:100%;max-width:300px;padding:14px 16px;border-radius:14px;border:1.5px solid #dcdce4;font-size:16px;font-family:inherit;background:#f5f5f7;color:#1d1d1f;outline:none}
+.ob-input:focus{border-color:#1b2cc1;background:#fff}
+body.dark .ob-input{background:#f5f5f7;border-color:#dcdce4;color:#1d1d1f}
+body.dark .ob-input:focus{border-color:#1b2cc1;background:#fff}
+.ob-input.err{border-color:#FF3B30;background:#fff5f5}
+.ob-btn{width:100%;max-width:300px;padding:16px;border-radius:16px;border:none;background:#1b2cc1;color:#fff;font-size:17px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:8px}
+.ob-btn:active{opacity:.85}
+.ob-err{font-size:12px;color:#FF3B30;margin-top:-8px;margin-bottom:8px;display:none;width:100%;max-width:300px}
+
+/* DAILY HEADER */
+.day-header-bar{background:#fff;padding:10px 20px 14px;border-bottom:0.5px solid #f0f0f5;margin:0 -20px 14px}
+body.dark .day-header-bar{background:#111118;border-color:#2a2a3a}
+body.dark #day-topbar{background:#111118}
+.day-header-top{display:flex;align-items:center;gap:10px}
+.day-header-logo{font-size:30px;font-weight:900;font-style:italic;color:#1b2cc1;letter-spacing:-1.5px;text-align:center;display:block;width:100%}
+.day-header-name{font-size:14px;font-weight:600;color:#1d1d1f;margin-left:auto}
+body.dark .day-header-name{color:#f0f0f5}
+.day-header-msg{font-size:13px;color:transparent;margin-top:6px;font-style:italic;text-align:center;
+  background:linear-gradient(90deg,#1b2cc1,#7a8fff,#1b2cc1);
+  background-size:200% auto;
+  -webkit-background-clip:text;background-clip:text;
+  animation:msgShimmer 3s linear infinite}
+body.dark .day-header-msg{background:linear-gradient(90deg,#7a8fff,#c0caff,#7a8fff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes msgShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+body.dark .day-header-msg{color:#8e8e9a}
+
+
 /* DARK MODE */
 body.dark{background:#0a0a0f}
 body.dark{background:#111118}
@@ -369,16 +430,74 @@ body.dark .total-num{color:#fff}
 <body>
 
 <div class="toast" id="toast"></div>
+<div class="pinlock hide" id="pinlock">
+  <div class="pin-logo">KRONOBUS</div>
+  <div class="pin-name" id="pin-username"></div>
+  <div class="pin-title">Entrez votre code</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-key" onclick="pinKey('1')">1</button>
+    <button class="pin-key" onclick="pinKey('2')">2</button>
+    <button class="pin-key" onclick="pinKey('3')">3</button>
+    <button class="pin-key" onclick="pinKey('4')">4</button>
+    <button class="pin-key" onclick="pinKey('5')">5</button>
+    <button class="pin-key" onclick="pinKey('6')">6</button>
+    <button class="pin-key" onclick="pinKey('7')">7</button>
+    <button class="pin-key" onclick="pinKey('8')">8</button>
+    <button class="pin-key" onclick="pinKey('9')">9</button>
+    <div></div>
+    <button class="pin-key" onclick="pinKey('0')">0</button>
+    <button class="pin-key del" onclick="pinDel()">⌫</button>
+  </div>
+  <div class="pin-err-msg" id="pin-err"></div>
+</div>
+<div class="onboard" id="onboard">
+  <div class="ob-logo">KRONOBUS</div>
+  <div class="ob-sub">Kronobus</div>
+  <div class="ob-title">Bienvenue !</div>
+  <div class="ob-desc">Pour personnaliser votre app et vos rapports,<br>merci de renseigner vos informations.<br><br><span style="font-size:12px;color:#adadb8">🔒 Ces informations sont stockées uniquement sur votre téléphone et ne sont jamais partagées.<br>Vous n'aurez à les saisir qu'une seule fois.</span></div>
+  <div class="ob-field">
+    <div class="ob-label">PRÉNOM <span>obligatoire</span></div>
+    <input class="ob-input" id="ob-prenom" type="text" placeholder="Votre prénom" autocomplete="given-name">
+  </div>
+  <div class="ob-err" id="ob-err-prenom">Le prénom est obligatoire</div>
+  <div class="ob-field">
+    <div class="ob-label">NOM <span>obligatoire</span></div>
+    <input class="ob-input" id="ob-nom" type="text" placeholder="Votre nom de famille" autocomplete="family-name">
+  </div>
+  <div class="ob-err" id="ob-err-nom">Le nom est obligatoire</div>
+  <div class="ob-field">
+    <div class="ob-label">TÉLÉPHONE <span>optionnel</span></div>
+    <input class="ob-input" id="ob-tel" type="tel" placeholder="06 xx xx xx xx" autocomplete="tel">
+  </div>
+  <div class="ob-field">
+    <div class="ob-label">N° MATRICULE <span>4 chiffres — obligatoire</span></div>
+    <input class="ob-input" id="ob-mat" type="number" placeholder="0000" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
+  </div>
+  <div class="ob-err" id="ob-err-mat">Le matricule doit contenir 4 chiffres</div>
+  <div class="ob-field">
+    <div class="ob-label">CODE PERSONNEL <span>4 chiffres — obligatoire</span></div>
+    <input class="ob-input" id="ob-pin" type="password" placeholder="••••" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
+  </div>
+  <div class="ob-err" id="ob-err-pin">Le code doit contenir exactement 4 chiffres</div>
+  <button class="ob-btn" onclick="submitOnboard()">C'est parti !</button>
+</div>
 <div class="splash" id="splash"><div class="splash-letters"><span class="splash-letter" style="animation-delay:0s">K</span><span class="splash-letter" style="animation-delay:0.1s">R</span><span class="splash-letter" style="animation-delay:0.2s">O</span><span class="splash-letter" style="animation-delay:0.3s">N</span><span class="splash-letter" style="animation-delay:0.4s">O</span><span class="splash-letter" style="animation-delay:0.5s">B</span><span class="splash-letter" style="animation-delay:0.6s">U</span><span class="splash-letter" style="animation-delay:0.7s">S</span></div><div class="splash-sub">Gestion des horaires</div></div></div>
 <input type="file" id="camInput" accept="image/*" capture="environment">
 <input type="file" id="importInput" accept=".json,.csv" style="position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px">
 
 <div class="app">
+  <div id="day-topbar"></div>
   <div class="nav">
     <button class="nav-btn" id="prevBtn">&#8249;</button>
     <span class="nav-title" id="navTitle"></span>
     <div style="display:flex;align-items:center;gap:4px">
-      <button class="nav-btn" id="darkBtn" onclick="toggleDark()" title="Mode sombre" style="font-size:20px;padding:4px 8px">&#9790;</button>
+      <button class="nav-btn" id="darkBtn" style="display:none"></button>
       <button class="nav-btn" id="nextBtn">&#8250;</button>
     </div>
   </div>
@@ -469,6 +588,10 @@ function getMondayOf(d){var day=d.getDay(),diff=d.getDate()-(day===0?6:day-1);re
 
 function setView(v){
   view=v;
+  var tb=document.getElementById('day-topbar');
+  if(tb)tb.style.display=(v==='day'?'block':'none');
+  var db=document.getElementById('darkBtn');
+  if(db)db.style.display=(v==='day'?'none':'block');
   var tabs=['day','week','month','year','report','export'];
   tabs.forEach(function(t){var el=document.getElementById('tb-'+t);if(el)el.classList.remove('on');});
   var active=document.getElementById('tb-'+v);if(active)active.classList.add('on');
@@ -943,7 +1066,8 @@ function exportCSV(){
 function exportTXT(){
   var y=cur.getFullYear(),m=cur.getMonth(),days=new Date(y,m+1,0).getDate();
   var sep='\u2500'.repeat(42);
-  var txt='RAPPORT HORAIRE \u2014 '+MO[m].toUpperCase()+' '+y+'\n'+sep+'\n\n';
+  var p2=getProfile();
+  var txt='RAPPORT HORAIRE \u2014 '+MO[m].toUpperCase()+' '+y+'\n'+(p2?'Conducteur : '+p2.prenom+' '+p2.nom+(p2.tel?' | '+p2.tel:'')+'\n':'')+sep+'\n\n';
   var totM=0,workedD=0,weH=0,weD=0,nightD=0,nightH=0;
   for(var d=1;d<=days;d++){
     var key=y+'-'+m+'-'+d,t=totalDay(key);if(!t)continue;
@@ -983,6 +1107,7 @@ function toggleDark(){
   localStorage.setItem('kb_dark', dark?'1':'0');
   document.getElementById('darkBtn').textContent=dark?'\u2600':'\u263E';
   document.documentElement.style.background=dark?'#111118':'';
+  initDailyHeader();
 }
 function initDark(){
   if(localStorage.getItem('kb_dark')==='1'){
@@ -995,7 +1120,8 @@ function initDark(){
 function buildReportTxt(){
   var y=cur.getFullYear(),m=cur.getMonth(),days=new Date(y,m+1,0).getDate();
   var sep='\u2500'.repeat(40);
-  var txt='RAPPORT HORAIRE \u2014 '+MO[m].toUpperCase()+' '+y+'\n'+sep+'\n\n';
+  var p2=getProfile();
+  var txt='RAPPORT HORAIRE \u2014 '+MO[m].toUpperCase()+' '+y+'\n'+(p2?'Conducteur : '+p2.prenom+' '+p2.nom+(p2.tel?' | '+p2.tel:'')+'\n':'')+sep+'\n\n';
   var totM=0,workedD=0,weH=0,weD=0,nightD=0,nightH=0;
   for(var d=1;d<=days;d++){
     var key=y+'-'+m+'-'+d,t=totalDay(key);if(!t)continue;
@@ -1147,9 +1273,169 @@ function doImport(replace){
   }
 }
 
+
+// ── Driver profile ──────────────────────────────────────────
+var PROFILE_KEY='kb_profile';
+function getProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY))||null;}catch(e){return null;}}
+function saveProfile(p){localStorage.setItem(PROFILE_KEY,JSON.stringify(p));}
+
+function submitOnboard(){
+  var prenom=document.getElementById('ob-prenom').value.trim();
+  var nom=document.getElementById('ob-nom').value.trim();
+  var tel=document.getElementById('ob-tel').value.trim();
+  var mat=document.getElementById('ob-mat').value.trim();
+  var pin=document.getElementById('ob-pin').value.trim();
+  var ok=true;
+  function setErr(id,errId,show){
+    document.getElementById(id).classList.toggle('err',show);
+    document.getElementById(errId).style.display=show?'block':'none';
+    if(show)ok=false;
+  }
+  setErr('ob-prenom','ob-err-prenom',!prenom);
+  setErr('ob-nom','ob-err-nom',!nom);
+  setErr('ob-mat','ob-err-mat',!/^\d{4}$/.test(mat));
+  setErr('ob-pin','ob-err-pin',!/^\d{4}$/.test(pin));
+  if(!ok)return;
+  saveProfile({prenom:prenom,nom:nom,tel:tel,mat:mat,pin:pin});
+  document.getElementById('onboard').classList.add('hide');
+  initDailyHeader();
+}
+
+
+// ── PIN Lock ─────────────────────────────────────────────────
+var _pinEntry='';
+var _pinUnlocked=false;
+
+function showPinLock(){
+  var p=getProfile();
+  if(!p||!p.pin){_pinUnlocked=true;return;}
+  _pinEntry='';
+  _pinUnlocked=false;
+  document.getElementById('pin-username').textContent=p.prenom+' '+p.nom+(p.mat?' — Matricule '+p.mat:'');
+  updatePinDots();
+  document.getElementById('pin-err').textContent='';
+  document.getElementById('pinlock').classList.remove('hide');
+}
+
+function pinKey(k){
+  if(_pinEntry.length>=4)return;
+  _pinEntry+=k;
+  updatePinDots();
+  if(_pinEntry.length===4)setTimeout(checkPin,120);
+}
+
+function pinDel(){
+  _pinEntry=_pinEntry.slice(0,-1);
+  updatePinDots();
+  document.getElementById('pin-err').textContent='';
+  for(var i=0;i<4;i++)document.getElementById('pd'+i).classList.remove('err');
+}
+
+function updatePinDots(){
+  for(var i=0;i<4;i++){
+    var d=document.getElementById('pd'+i);
+    d.classList.toggle('filled',i<_pinEntry.length);
+    d.classList.remove('err');
+  }
+}
+
+function checkPin(){
+  var p=getProfile();
+  if(_pinEntry===p.pin){
+    _pinUnlocked=true;
+    document.getElementById('pinlock').classList.add('hide');
+    initDailyHeader();
+  } else {
+    for(var i=0;i<4;i++)document.getElementById('pd'+i).classList.add('err');
+    document.getElementById('pin-err').textContent='Code incorrect, réessayez';
+    setTimeout(function(){
+      _pinEntry='';
+      updatePinDots();
+      document.getElementById('pin-err').textContent='';
+    },900);
+  }
+}
+
+function initOnboard(){
+  var p=getProfile();
+  if(!p||!p.prenom||!p.nom){
+    document.getElementById('onboard').classList.remove('hide');
+  } else {
+    document.getElementById('onboard').classList.add('hide');
+    showPinLock();
+  }
+}
+
+
+// ── Daily messages ───────────────────────────────────────────
+var MSGS=[
+  "Bonne route aujourd\'hui, le volant est à toi !",
+  "Garde la pêche, bonne route !",
+  "Excellente journée sur les routes !",
+  "Bonne journée et bon voyage !",
+  "Belle journée à toi, roule bien et reste zen !",
+  "Le soleil se lève, les routes t\'appartiennent !",
+  "Plein d\'énergie pour cette belle journée de route !",
+  "Un jour de plus à faire bouger les gens, merci à toi !",
+  "Courage et sérénité au programme aujourd\'hui !",
+  "Les passagers sont entre de bonnes mains, bonne journée !",
+  "Moteur lancé, bonne humeur activée — c\'est parti !",
+  "Tu assures, comme chaque jour. Belle route !",
+  "Zen, focus, souriant — tu es prêt pour cette journée !",
+  "La route est longue mais le voyage en vaut la peine !",
+  "En route pour une journée d\'exception !",
+  "Sois fier de ce que tu fais, tu transportes des vies !",
+  "Aujourd\'hui encore, tu fais la différence sur la route !",
+  "Café chaud, moteur chaud — prêt pour une super journée !",
+  "La ponctualité c\'est ton super-pouvoir, bonne journée !",
+  "Chaque trajet est une nouvelle aventure, profites-en !",
+  "Les routes te connaissent par cœur, bonne journée !",
+  "Reste toi-même — efficace, fiable et de bonne humeur !",
+  "Une belle journée commence par un beau départ !",
+  "Tu n\'es pas juste chauffeur, tu es le lien entre les gens !",
+  "Sécurité, sérénité, sourire — ta devise du jour !"
+];
+
+function getDayMsg(){
+  var d=new Date();
+  var idx=(d.getFullYear()*366+d.getMonth()*31+d.getDate())%MSGS.length;
+  return MSGS[idx];
+}
+
+function getDailyHeaderHTML(){
+  var p=getProfile();
+  if(!p)return '';
+  var msg=getDayMsg();
+  var dark=document.body.classList.contains('dark');
+  return '<div class="day-header-bar">'+
+    // Row 1: Logo centered alone
+    '<div class="day-header-logo">KRONOBUS</div>'+
+    // Row 2: Name+matricule left | dark toggle right
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">'+
+      '<div style="display:flex;align-items:center;gap:6px">'+
+        '<span style="font-size:13px;font-weight:700;color:'+(dark?'#f0f0f5':'#1d1d1f')+'">'+p.prenom.toUpperCase()+' '+p.nom.toUpperCase().charAt(0)+'.</span>'+
+        (p.mat?'<span style="font-size:10px;color:#adadb8;font-weight:700;background:'+(dark?'#2a2a3a':'#f0f0f5')+';border-radius:6px;padding:2px 7px">N°'+p.mat+'</span>':'')+
+      '</div>'+
+      '<button onclick="toggleDark()" style="background:none;border:1.5px solid '+(dark?'#3a3a4a':'#e0e0e8')+';border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;color:'+(dark?'#f0f0f5':'#48484a')+';cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px">'+
+        '<span style="font-size:14px">'+(dark?'☀️':'🌙')+'</span>'+(dark?'Jour':'Nuit')+
+      '</button>'+
+    '</div>'+
+    // Row 3: Animated motivational message
+    '<div class="day-header-msg">'+msg+'</div>'+
+  '</div>';
+}
+
+function initDailyHeader(){
+  var bar=getDailyHeaderHTML();
+  if(!bar)return;
+  var tb=document.getElementById('day-topbar');
+  if(tb)tb.innerHTML=bar;
+}
+
 loadData();
 render();
 initDark();
+initOnboard();
 setTimeout(function(){document.getElementById('splash').classList.add('hide');},2400);
 
 if('serviceWorker' in navigator){
