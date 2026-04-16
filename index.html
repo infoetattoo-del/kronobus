@@ -15,7 +15,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 html,body{height:100%;background:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',sans-serif}
 body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh}
-.app{width:100%;max-width:390px;background:#fff;min-height:100vh;padding:env(safe-area-inset-top,56px) 20px 0;position:relative;margin:0 auto}
+.app{width:100%;max-width:390px;background:#fff;min-height:100%;padding:env(safe-area-inset-top,56px) 20px 0;position:relative;margin:0 auto}
 .screen-pad{height:calc(env(safe-area-inset-bottom,0px) + 90px)}
 .screen-pad-xl{height:calc(env(safe-area-inset-bottom,0px) + 320px)}
 
@@ -260,6 +260,7 @@ body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh
 
 /* DARK MODE */
 body.dark{background:#0a0a0f}
+body.dark{background:#111118}
 body.dark .app{background:#111118;color:#f0f0f5}
 body.dark .nav-title{color:#f0f0f5}
 body.dark .nav-btn{color:#5e7aff}
@@ -279,11 +280,21 @@ body.dark .tblk{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.
 body.dark .tblk-val{color:#f0f0f5}
 body.dark .tblk-lbl{color:#8e8e9a}
 body.dark .dur-chip{background:#1e1e2a;border-color:#2e2e42;color:#b0b0c0}
+body.dark .dur-chip b{color:#f0f0f5}
+body.dark .tblk .tblk-val{color:#f0f0f5}
+body.dark .tblk .tblk-lbl{color:#8e8e9a}
+body.dark .arrow{color:#8e8e9a}
 body.dark .pbtn.pin{background:#1b2cc1}
 body.dark .pbtn.pout{background:#2a5c2a}
 body.dark .pbtn.pdone{background:#1e1e2a;color:#6e6e80}
 body.dark .add-btn{color:#7a8fff}
 body.dark .total-card{background:#1a1e3a}
+body.dark .total-card .card-lbl{color:rgba(255,255,255,.5)}
+body.dark .total-card .total-num{color:#f0f0f5}
+body.dark .total-card-sub{color:#8e8e9a !important}
+body.dark .total-card-amp{color:#9090a0 !important}
+body.dark .total-card-row{background:rgba(255,255,255,.06) !important}
+body.dark .tblk-val.emp{color:#4a4a5a}
 body.dark .sec-lbl{color:#8e8e9a}
 body.dark .note-inp{background:#1e1e2a;border-color:#2e2e42;color:#f0f0f5}
 body.dark .week-day-row:nth-child(1){background:#1a1e3a;border-color:#2a3060}
@@ -293,6 +304,10 @@ body.dark .week-day-row:nth-child(4){background:#2a2610;border-color:#443c18}
 body.dark .week-day-row:nth-child(5){background:#221a2e;border-color:#382a4a}
 body.dark .week-day-row:nth-child(6){background:#182428;border-color:#1e3840}
 body.dark .week-day-row:nth-child(7){background:#2a1e18;border-color:#442e20}
+body.dark .week-day-row.today-row{background:#1e2560 !important;border-color:#4a5aff !important}
+body.dark .week-day-row.today-row .wdr-name{color:#f0f0f5}
+body.dark .week-day-row.today-row .wdr-date{color:#9090c0}
+body.dark .week-day-row.today-row .wdr-total{color:#f0f0f5}
 body.dark .wdr-name{color:#f0f0f5}
 body.dark .wdr-date{color:#8e8e9a}
 body.dark .wdr-total{color:#f0f0f5}
@@ -510,7 +525,7 @@ function renderDay(){
     var pc=pastelClasses[i%pastelClasses.length];
     h+='<div class="card '+pc+'">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
-    h+='<div class="card-lbl" style="margin-bottom:0">'+(i===0?'Amplitude principale':'Amplitude '+(i+1))+'</div>';
+    h+='<div class="card-lbl" style="margin-bottom:0">'+(i===0?'Heures de travail':'Temps de travail '+(i+1))+'</div>';
     h+='<button class="dots-btn" onclick="showSegMenu(\''+key+'\','+i+')">&#8943;</button>';
     h+='</div>';
     h+='<div class="trow">';
@@ -528,11 +543,45 @@ function renderDay(){
 
   h+='<button class="add-btn" onclick="addSeg(\''+key+'\')">';
   h+='<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#1b2cc1" stroke-width="1.5"/><path d="M10 6v8M6 10h8" stroke="#1b2cc1" stroke-width="1.5" stroke-linecap="round"/></svg>';
-  h+='Ajouter une amplitude</button>';
+  h+='Ajouter un temps de travail</button>';
 
   var tot=totalDay(key);
+  // Amplitude journalière = first start to last end (breaks included)
+  var ampJ=null,fS='',fE='';
+  if(rec.seg){
+    var allS=rec.seg.filter(function(s){return s.s;}).map(function(s){var p=s.s.split(':');return +p[0]*60+ +p[1];});
+    var allE=rec.seg.filter(function(s){return s.e;}).map(function(s){var p=s.e.split(':');return +p[0]*60+ +p[1];});
+    if(allS.length&&allE.length){
+      var t0=Math.min.apply(null,allS),t1=Math.max.apply(null,allE);
+      ampJ=t1-t0;if(ampJ<0)ampJ+=1440;
+      fS=Math.floor(t0/60)+':'+(t0%60<10?'0':'')+t0%60;
+      fE=Math.floor(t1/60)+':'+(t1%60<10?'0':'')+t1%60;
+    }
+  }
   if(tot>0){
-    h+='<div class="total-card"><div class="card-lbl">TOTAL JOURN\u00c9E'+(we?' \u00b7 WEEK-END':'')+'</div><div class="total-num">'+fmtD(tot)+'</div></div>';
+    h+='<div class="total-card">';
+    h+='<div class="card-lbl">TOTAL JOURNÉE'+(we?' · WEEK-END':'')+'</div>';
+    h+='<div style="display:grid;grid-template-columns:'+(ampJ!==null&&ampJ!==tot?'1fr 1fr':'1fr')+';gap:8px;margin-bottom:10px;align-items:end">';
+    h+='<div style="text-align:center;padding:8px 0;display:flex;flex-direction:column;justify-content:flex-end">';
+    h+='<div class="total-card-sub" style="font-size:11px;color:#6e6e73;font-weight:600;letter-spacing:.3px;margin-bottom:4px">TEMPS TRAVAILLÉ</div>';
+    h+='<div class="total-num" style="text-align:center">'+fmtD(tot)+'</div>';
+    h+='</div>';
+    if(ampJ!==null&&ampJ!==tot){
+      h+='<div style="text-align:center;padding:8px 0;border-left:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:flex-end">';
+      h+='<div class="total-card-sub" style="font-size:11px;color:#6e6e73;font-weight:600;letter-spacing:.3px;margin-bottom:4px">AMPLITUDE JOURNALIÈRE</div>';
+      h+='<div class="total-num total-card-amp" style="text-align:center">'+fmtD(ampJ)+'</div>';
+      h+='</div>';
+    }
+    h+='</div>';
+    if(ampJ!==null&&ampJ!==tot){
+      var coupure=ampJ-tot;
+      h+='<div class="total-card-row" style="display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.04);border-radius:10px;padding:8px 12px">';
+      h+='<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#6e6e73" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="#6e6e73" stroke-width="1.8" stroke-linecap="round"/></svg>';
+      h+='<span class="total-card-sub" style="font-size:12px;color:#6e6e73">'+fS+' → '+fE+'</span>';
+      h+='<span style="font-size:12px;color:#adadb8;margin-left:auto">dont '+fmtD(coupure)+' coupure</span>';
+      h+='</div>';
+    }
+    h+="</div>";
   }
 
   h+='<div class="sec-lbl">Note</div>';
@@ -611,6 +660,18 @@ function getIllusBanner(title,sub){
     '</div></div></div>';
 }
 
+
+function calcAmpJ(key){
+  var rec=data[key];
+  if(!rec||!rec.seg)return null;
+  var allS=rec.seg.filter(function(s){return s.s;}).map(function(s){var p=s.s.split(':');return +p[0]*60+ +p[1];});
+  var allE=rec.seg.filter(function(s){return s.e;}).map(function(s){var p=s.e.split(':');return +p[0]*60+ +p[1];});
+  if(!allS.length||!allE.length)return null;
+  var t0=Math.min.apply(null,allS),t1=Math.max.apply(null,allE);
+  var amp=t1-t0;if(amp<0)amp+=1440;
+  return amp;
+}
+
 function renderWeek(){
   var monday=getMondayOf(cur);
   var nav=document.getElementById('navTitle')?document.getElementById('navTitle').textContent:'Semaine';
@@ -627,15 +688,34 @@ function renderWeek(){
     h+='<div class="wdr-name">'+DL[dt.getDay()]+'</div>';
     h+='<div class="wdr-date">'+dt.getDate()+' '+MO[dt.getMonth()]+'</div>';
     h+='</div>';
+    var ampJw=calcAmpJ(key);
     h+='<div class="wdr-right">';
     h+='<div class="wdr-total'+(t?'':' empty')+'">'+(t?fmtD(t):'--')+'</div>';
+    if(ampJw&&ampJw!==t)h+='<div style="font-size:11px;color:#8e8e93;margin-top:2px">amp. '+fmtD(ampJw)+'</div>';
     if(we||night){h+='<div>';if(we)h+='<span class="wdr-badge we">W-E</span>';if(night)h+='<span class="wdr-badge night">Nuit</span>';h+='</div>';}
     h+='</div>';
     h+='</div>';
   }
   var _nav2=document.getElementById('navTitle').textContent;
-  var topCard=getIllusBanner(_nav2)+'<div class="week-total-card"><div><div class="wtc-lbl">Total semaine</div><div class="wtc-val">'+fmtD(totW)+'</div></div>';
-  topCard+='<div style="text-align:right"><div class="wtc-lbl">Jours trav.</div><div style="font-size:24px;font-weight:700;color:#fff">'+workedW+'</div></div></div>';
+  // Amplitude globale semaine = premier début lundi → dernier fin dimanche
+  var totAmpW=0;
+  for(var wi=0;wi<7;wi++){
+    var wdt=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+wi);
+    var wk2=dk(wdt),aw=calcAmpJ(wk2);
+    if(aw)totAmpW+=aw;
+  }
+  var topCard=getIllusBanner(_nav2)+'<div class="week-total-card" style="flex-direction:column;gap:12px">';
+  topCard+='<div style="display:flex;justify-content:space-between;align-items:flex-end;width:100%">';
+  topCard+='<div><div class="wtc-lbl">Total heures travaillées</div><div class="wtc-val">'+fmtD(totW)+'</div></div>';
+  topCard+='<div style="text-align:right"><div class="wtc-lbl">Jours trav.</div><div style="font-size:24px;font-weight:700;color:#fff">'+workedW+'</div></div>';
+  topCard+='</div>';
+  if(totAmpW>0&&totAmpW!==totW){
+    topCard+='<div style="border-top:1px solid rgba(255,255,255,.2);padding-top:10px;width:100%">';
+    topCard+='<div class="wtc-lbl">Amplitude globale semaine</div>';
+    topCard+='<div class="wtc-val">'+fmtD(totAmpW)+'</div>';
+    topCard+='</div>';
+  }
+  topCard+='</div>';
   if(weHW>0){
     topCard+='<div class="stat-row"><div class="stat"><div class="stat-v" style="color:#b91c1c">'+fmtD(weHW)+'</div><div class="stat-l">H. WEEK-END</div></div>';
     topCard+='<div class="stat"><div class="stat-v" style="color:#b91c1c">'+(workedW?fmtD(Math.round(totW/workedW)):'--')+'</div><div class="stat-l">MOY. JOUR</div></div>';
@@ -671,11 +751,24 @@ function renderMonth(){
   for(var i=1;i<=rem;i++)h+='<div class="cday om"><span class="cdn">'+i+'</span></div>';
   h+='</div>';
   var avg=workedD>0?Math.round(totM/workedD):0;
+  // Total amplitude journalière mensuelle
+  var totAmpM=0,ampCount=0;
+  for(var dd=1;dd<=days;dd++){
+    var ak=y+'-'+m+'-'+dd,aa=calcAmpJ(ak);
+    if(aa){totAmpM+=aa;ampCount++;}
+  }
+  var avgAmp=ampCount>0?Math.round(totAmpM/ampCount):0;
   h+='<div class="stat-row" style="margin-top:16px">';
   h+='<div class="stat"><div class="stat-v">'+fmtD(totM)+'</div><div class="stat-l">TOTAL MOIS</div></div>';
   h+='<div class="stat"><div class="stat-v">'+workedD+'</div><div class="stat-l">JOURS TRAV.</div></div>';
-  h+='<div class="stat"><div class="stat-v">'+fmtD(avg)+'</div><div class="stat-l">MOY. JOUR</div></div>';
+  h+='<div class="stat"><div class="stat-v">'+fmtD(avg)+'</div><div class="stat-l">MOY. TRAVAILLÉ</div></div>';
   h+='</div>';
+  if(avgAmp>0&&avgAmp!==avg){
+    h+='<div class="stat-row">';
+    h+='<div class="stat"><div class="stat-v">'+fmtD(totAmpM)+'</div><div class="stat-l">TOTAL AMPLITUDE</div></div>';
+    h+='<div class="stat"><div class="stat-v">'+fmtD(avgAmp)+'</div><div class="stat-l">MOY. AMPLITUDE</div></div>';
+    h+='</div>';
+  }
   if(weD>0||nightD>0){
     h+='<div class="stat-row">';
     if(weD>0){
@@ -726,11 +819,17 @@ function renderReport(){
   var avg=workedD>0?Math.round(totM/workedD):0;
   var maxW=Math.max.apply(null,Object.values(weekly).concat([1]));
   var _nav=document.getElementById('navTitle').textContent;
+    // Amplitude mensuelle
+  var totAmpR=0,cntAmpR=0;
+  for(var dr=1;dr<=days;dr++){var ar=calcAmpJ(y+'-'+m+'-'+dr);if(ar){totAmpR+=ar;cntAmpR++;}}
+  var avgAmpR=cntAmpR>0?Math.round(totAmpR/cntAmpR):0;
   var h=getIllusBanner(_nav)+'<div class="rep-card"><div class="rep-title">Synth\u00e8se mensuelle</div>';
-  h+='<div class="rep-row"><span class="rep-key">Total heures</span><span class="rep-val ok">'+fmtD(totM)+'</span></div>';
+  h+='<div class="rep-row"><span class="rep-key">Total travaill\u00e9</span><span class="rep-val ok">'+fmtD(totM)+'</span></div>';
+  if(totAmpR>0&&totAmpR!==totM)h+='<div class="rep-row"><span class="rep-key">Total amplitude</span><span class="rep-val">'+fmtD(totAmpR)+'</span></div>';
   h+='<div class="rep-row"><span class="rep-key">Jours travaill\u00e9s</span><span class="rep-val">'+workedD+' j.</span></div>';
   h+='<div class="rep-row"><span class="rep-key">Heures semaine</span><span class="rep-val">'+fmtD(totM-weH)+'</span></div>';
-  h+='<div class="rep-row"><span class="rep-key">Moyenne journ\u00e9e</span><span class="rep-val">'+fmtD(avg)+'</span></div>';
+  h+='<div class="rep-row"><span class="rep-key">Moy. travaill\u00e9</span><span class="rep-val">'+fmtD(avg)+'</span></div>';
+  if(avgAmpR>0&&avgAmpR!==avg)h+='<div class="rep-row"><span class="rep-key">Moy. amplitude</span><span class="rep-val">'+fmtD(avgAmpR)+'</span></div>';
   h+='</div>';
   if(weD>0){
     h+='<div class="rep-card"><div class="rep-title">Week-end</div>';
@@ -852,7 +951,7 @@ function exportTXT(){
     totM+=t;workedD++;if(we){weH+=t;weD++;}if(night){nightD++;nightH+=t;}
     var rec=data[key],pc=rec&&rec.photos?rec.photos.length:0;
     txt+=String(d).padStart(2,'0')+'/'+(m+1)+'  '+DL[dt.getDay()].substring(0,3).toUpperCase()+(we?' [WE]':'')+(night?' [NUIT]':'')+(pc>0?' ['+pc+' photo'+(pc>1?'s':'')+']':'')+'\n';
-    if(rec&&rec.seg)rec.seg.forEach(function(s,i){if(s.s||s.e)txt+='  Amplitude '+(i+1)+' : '+(s.s||'?')+' \u2192 '+(s.e||'?')+'  ('+fmtD(calcDur(s.s,s.e))+')\n';});
+    if(rec&&rec.seg)rec.seg.forEach(function(s,i){if(s.s||s.e)txt+='  Travail '+(i+1)+' : '+(s.s||'?')+' \u2192 '+(s.e||'?')+'  ('+fmtD(calcDur(s.s,s.e))+')\n';});
     txt+='  Total : '+fmtD(t);if(rec&&rec.note)txt+='  |  '+rec.note;txt+='\n\n';
   }
   txt+=sep+'\nSYNTH\u00c8SE\n'+sep+'\n';
@@ -874,7 +973,7 @@ function showSegMenu(k,i){
   b+='<button class="exp-btn" onclick="resetSeg(\''+k+'\','+i+');closeModal()"><div class="eico" style="background:#FF3B3015;font-size:16px">&#128465;</div><div><div>Effacer les heures</div><div class="exp-desc">Remet début et fin à zéro</div></div></button>';
   if(!isOnly)b+='<button class="exp-btn" onclick="delSeg(\''+k+'\','+i+');closeModal()"><div class="eico" style="background:#FF3B3015;font-size:16px">&#10005;</div><div><div style="color:#FF3B30">Supprimer cette amplitude</div><div class="exp-desc">Supprime complètement ce bloc</div></div></button>';
   b+='</div><button class="mcancel" style="width:100%;margin-top:8px" onclick="closeModal()">Annuler</button>';
-  openModal('Options amplitude '+(i+1),b);
+  openModal('Options temps de travail '+(i+1),b);
 }
 function resetSeg(k,i){if(!data[k]||!data[k].seg[i])return;data[k].seg[i]={s:null,e:null};saveData();renderDay();}
 function clearHours(k){if(!data[k])return;data[k].seg=[{s:null,e:null}];data[k].note='';saveData();renderDay();}
@@ -883,11 +982,13 @@ function toggleDark(){
   var dark=document.body.classList.toggle('dark');
   localStorage.setItem('kb_dark', dark?'1':'0');
   document.getElementById('darkBtn').textContent=dark?'\u2600':'\u263E';
+  document.documentElement.style.background=dark?'#111118':'';
 }
 function initDark(){
   if(localStorage.getItem('kb_dark')==='1'){
     document.body.classList.add('dark');
     document.getElementById('darkBtn').textContent='\u2600';
+    document.documentElement.style.background='#111118';
   }
 }
 
