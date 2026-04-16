@@ -23,16 +23,15 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
+  // Network first — cache only as offline fallback
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      if (cached) return cached;
-      return fetch(e.request).then(function(resp) {
-        return caches.open(CACHE).then(function(c) {
-          c.put(e.request, resp.clone());
-          return resp;
-        });
-      }).catch(function() {
-        return caches.match('./index.html');
+    fetch(e.request).then(function(resp) {
+      var clone = resp.clone();
+      caches.open(CACHE).then(function(c){ c.put(e.request, clone); });
+      return resp;
+    }).catch(function() {
+      return caches.match(e.request).then(function(cached){
+        return cached || caches.match('./index.html');
       });
     })
   );
