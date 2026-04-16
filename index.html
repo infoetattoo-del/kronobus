@@ -472,7 +472,7 @@ body.dark .total-num{color:#fff}
   <div class="ob-err" id="ob-err-nom">Le nom est obligatoire</div>
   <div class="ob-field">
     <div class="ob-label">N° MATRICULE <span>4 chiffres — obligatoire</span></div>
-    <input class="ob-input" id="ob-mat" type="number" placeholder="0000" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
+    <input class="ob-input" id="ob-mat" type="tel" placeholder="0000" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
   </div>
   <div class="ob-err" id="ob-err-mat">Le matricule doit contenir 4 chiffres</div>
   YPE html>
@@ -949,12 +949,12 @@ body.dark .total-num{color:#fff}
   <div class="ob-err" id="ob-err-nom">Le nom est obligatoire</div>
   <div class="ob-field">
     <div class="ob-label">N° MATRICULE <span>4 chiffres — obligatoire</span></div>
-    <input class="ob-input" id="ob-mat" type="number" placeholder="0000" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
+    <input class="ob-input" id="ob-mat" type="tel" placeholder="0000" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
   </div>
   <div class="ob-err" id="ob-err-mat">Le matricule doit contenir 4 chiffres</div>
   <div class="ob-field">
     <div class="ob-label">CODE PERSONNEL <span>4 chiffres — obligatoire</span></div>
-    <input class="ob-input" id="ob-pin" type="password" placeholder="••••" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
+    <input class="ob-input" id="ob-pin" type="tel" placeholder="••••" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" style="-webkit-text-security:disc">
   </div>
   <div class="ob-err" id="ob-err-pin">Le code doit contenir exactement 4 chiffres</div>
   <button class="ob-btn" onclick="submitOnboard()">C'est parti !</button>
@@ -1763,12 +1763,14 @@ function submitOnboard(){
     document.getElementById(errId).style.display=show?'block':'none';
     if(show)ok=false;
   }
+  var matClean=mat.replace(/\D/g,'');
+  var pinClean=pin.replace(/\D/g,'');
   setErr('ob-prenom','ob-err-prenom',!prenom);
   setErr('ob-nom','ob-err-nom',!nom);
-  setErr('ob-mat','ob-err-mat',!/^\d{4}$/.test(mat));
-  setErr('ob-pin','ob-err-pin',!/^\d{4}$/.test(pin));
+  setErr('ob-mat','ob-err-mat',matClean.length!==4);
+  setErr('ob-pin','ob-err-pin',pinClean.length!==4);
   if(!ok)return;
-  saveProfile({prenom:prenom,nom:nom,tel:tel,mat:mat,pin:pin});
+  saveProfile({prenom:prenom,nom:nom,tel:tel,mat:matClean,pin:pinClean});
   document.getElementById('onboard').classList.add('hide');
   initDailyHeader();
 }
