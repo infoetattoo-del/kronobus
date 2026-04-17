@@ -1,9 +1,11 @@
-var CACHE = 'kronobus-v39.6';
+var CACHE = 'kronobus-v39.3b';
 var FILES = ['./index.html', './'];
 
 self.addEventListener('install', function(e) {
   e.waitUntil(
-    caches.open(CACHE).then(function(c) { return c.addAll(FILES); })
+    caches.open(CACHE).then(function(c) {
+      return c.addAll(FILES);
+    })
   );
   self.skipWaiting();
 });
@@ -15,21 +17,20 @@ self.addEventListener('activate', function(e) {
         keys.filter(function(k) { return k !== CACHE; })
             .map(function(k) { return caches.delete(k); })
       );
-    }).then(function() { return self.clients.claim(); })
+    })
   );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', function(e) {
-  if (e.request.method !== 'GET') return;
+  // Network first — cache only as offline fallback
   e.respondWith(
-    fetch(e.request, { cache: 'no-cache' }).then(function(resp) {
-      if (resp && resp.status === 200) {
-        var clone = resp.clone();
-        caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
-      }
+    fetch(e.request).then(function(resp) {
+      var clone = resp.clone();
+      caches.open(CACHE).then(function(c){ c.put(e.request, clone); });
       return resp;
     }).catch(function() {
-      return caches.match(e.request).then(function(cached) {
+      return caches.match(e.request).then(function(cached){
         return cached || caches.match('./index.html');
       });
     })
