@@ -1,4 +1,4 @@
-var CACHE = 'kronobus-v39.4';
+var CACHE = 'kronobus-v39.6';
 var FILES = ['./index.html', './'];
 
 self.addEventListener('install', function(e) {
@@ -15,23 +15,14 @@ self.addEventListener('activate', function(e) {
         keys.filter(function(k) { return k !== CACHE; })
             .map(function(k) { return caches.delete(k); })
       );
-    }).then(function() {
-      return self.clients.claim();
-    }).then(function() {
-      // Notifie tous les clients qu'une nouvelle version est active
-      return self.clients.matchAll({ type: 'window' }).then(function(clients) {
-        clients.forEach(function(client) {
-          client.postMessage({ type: 'SW_UPDATED', version: CACHE });
-        });
-      });
-    })
+    }).then(function() { return self.clients.claim(); })
   );
 });
 
 self.addEventListener('fetch', function(e) {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request).then(function(resp) {
+    fetch(e.request, { cache: 'no-cache' }).then(function(resp) {
       if (resp && resp.status === 200) {
         var clone = resp.clone();
         caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
