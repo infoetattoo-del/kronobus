@@ -1977,8 +1977,12 @@ function openSettings(){
   b+='<div id="set-pin-err" style="font-size:12px;color:#f43f5e;margin-top:6px;min-height:16px"></div>';
   b+='<button onclick="saveSettingsPIN()" style="width:100%;margin-top:8px;padding:11px;background:#1b2cc1;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Changer le PIN</button>';
   b+='</div>';
+  // ── Déconnexion
+  b+='<div style="margin-top:8px;padding-top:12px;border-top:1px solid rgba(27,44,193,.08)">';
+  b+='<button onclick="authSignOut()" style="width:100%;padding:12px;background:rgba(244,63,94,.08);color:#f43f5e;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">🚪 Se déconnecter</button>';
+  b+='</div>';
   // ── Version
-  if(ver)b+='<div style="text-align:center;font-size:11px;color:#adadb8;padding-bottom:2px">'+ver+'</div>';
+  if(ver)b+='<div style="text-align:center;font-size:11px;color:#adadb8;padding:8px 0 2px">'+ver+'</div>';
   b+='</div>';
   openModal('⚙️ Paramètres', b);
 }
