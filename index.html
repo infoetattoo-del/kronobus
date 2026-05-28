@@ -2150,29 +2150,17 @@ async function authSignOut(){
 }
 
 async function initAuth(){
-  // Timeout sécurité : si Supabase ne répond pas en 5s, afficher auth
-  var safetyTimer=setTimeout(function(){
-    var sp=document.getElementById('splash');
-    if(sp)sp.classList.add('hide');
-    var as=document.getElementById('auth-screen');
-    if(as&&as.style.display==='none')as.style.display='flex';
-  },5000);
-
-  var sb=getSB();
-  if(!sb){
-    clearTimeout(safetyTimer);
+  function showAuth(){
     var sp=document.getElementById('splash');
     if(sp)sp.classList.add('hide');
     document.getElementById('auth-screen').style.display='flex';
-    return;
   }
 
-  sb.auth.onAuthStateChange(async function(event,session){
-    if(event==='SIGNED_IN'&&session){
-      clearTimeout(safetyTimer);
-      await authOnLogin(session.user);
-    }
-  });
+  // Timeout sécurité 4s
+  var safetyTimer=setTimeout(showAuth, 4000);
+
+  var sb=getSB();
+  if(!sb){ clearTimeout(safetyTimer); showAuth(); return; }
 
   try{
     var {data:{session}}=await sb.auth.getSession();
@@ -2180,16 +2168,25 @@ async function initAuth(){
     if(session&&session.user){
       await authOnLogin(session.user);
     } else {
-      var sp=document.getElementById('splash');
-      if(sp)sp.classList.add('hide');
-      document.getElementById('auth-screen').style.display='flex';
+      showAuth();
     }
   } catch(e){
     clearTimeout(safetyTimer);
-    var sp=document.getElementById('splash');
-    if(sp)sp.classList.add('hide');
-    document.getElementById('auth-screen').style.display='flex';
+    showAuth();
   }
+
+  // Écouter les changements de session
+  sb.auth.onAuthStateChange(async function(event,session){
+    if(event==='SIGNED_IN'&&session){
+      var as=document.getElementById('auth-screen');
+      if(as)as.style.display='none';
+      await authOnLogin(session.user);
+    } else if(event==='SIGNED_OUT'){
+      var app=document.getElementById('main-app');
+      if(app)app.style.display='none';
+      showAuth();
+    }
+  });
 }
 
 function bootApp(){
