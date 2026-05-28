@@ -2040,7 +2040,11 @@ var _authMode = 'login';
 
 function getSB(){
   if(!_sb && window.supabase)
-    _sb = window.supabase.createClient('https://yflsvgqpdcgcdnrsqbth.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbHN2Z3FwZGNnY2RucnNxYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3Mjc0NTEsImV4cCI6MjA5NTMwMzQ1MX0.Kv_upu2wNPivdrx04hgi3PzHJprNQIv3UrbrCa5t9n8');
+    _sb = window.supabase.createClient(
+      'https://yflsvgqpdcgcdnrsqbth.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbHN2Z3FwZGNnY2RucnNxYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3Mjc0NTEsImV4cCI6MjA5NTMwMzQ1MX0.Kv_upu2wNPivdrx04hgi3PzHJprNQIv3UrbrCa5t9n8',
+      {auth:{persistSession:true,storageKey:'kb_session',storage:window.localStorage}}
+    );
   return _sb;
 }
 
