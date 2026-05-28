@@ -494,7 +494,7 @@ body.dark{background:#111118}
       <div class="pw-feat"><div class="pw-check">✓</div>Export PDF & Excel</div>
       <div class="pw-feat"><div class="pw-check">✓</div>Heures sup & absences</div>
     </div>
-    <button class="auth-btn" onclick="window.open('https://buy.stripe.com/XXXX','_blank')">S'abonner →</button>
+    <button class="auth-btn" onclick="window.open('https://buy.stripe.com/14A6oJ6Oe2QggergAEfMA00','_blank')">S'abonner →</button>
     <button class="pw-logout" onclick="authSignOut()">Se déconnecter</button>
   </div>
 </div>
@@ -2124,17 +2124,42 @@ async function authSignOut(){
 }
 
 async function initAuth(){
+  // Timeout sécurité : si Supabase ne répond pas en 5s, afficher auth
+  var safetyTimer=setTimeout(function(){
+    var sp=document.getElementById('splash');
+    if(sp)sp.classList.add('hide');
+    var as=document.getElementById('auth-screen');
+    if(as&&as.style.display==='none')as.style.display='flex';
+  },5000);
+
   var sb=getSB();
-  if(!sb){bootApp();return;}
+  if(!sb){
+    clearTimeout(safetyTimer);
+    var sp=document.getElementById('splash');
+    if(sp)sp.classList.add('hide');
+    document.getElementById('auth-screen').style.display='flex';
+    return;
+  }
+
   sb.auth.onAuthStateChange(async function(event,session){
     if(event==='SIGNED_IN'&&session){
+      clearTimeout(safetyTimer);
       await authOnLogin(session.user);
     }
   });
-  var {data:{session}}=await sb.auth.getSession();
-  if(session&&session.user){
-    await authOnLogin(session.user);
-  } else {
+
+  try{
+    var {data:{session}}=await sb.auth.getSession();
+    clearTimeout(safetyTimer);
+    if(session&&session.user){
+      await authOnLogin(session.user);
+    } else {
+      var sp=document.getElementById('splash');
+      if(sp)sp.classList.add('hide');
+      document.getElementById('auth-screen').style.display='flex';
+    }
+  } catch(e){
+    clearTimeout(safetyTimer);
     var sp=document.getElementById('splash');
     if(sp)sp.classList.add('hide');
     document.getElementById('auth-screen').style.display='flex';
