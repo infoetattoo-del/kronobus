@@ -2093,6 +2093,14 @@ async function authGoogle(){
 }
 
 async function authOnLogin(user){
+  // Comptes admin — accès illimité
+  var ADMIN_EMAILS=['kronobus@gmail.com'];
+  if(ADMIN_EMAILS.indexOf(user.email)>-1){
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('paywall-screen').style.display='none';
+    bootApp();
+    return;
+  }
   var sb=getSB();
   var {data:profile}=await sb.from('profiles').select('*').eq('id',user.id).single();
   var now=new Date();
