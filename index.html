@@ -2175,14 +2175,19 @@ async function initAuth(){
 }
 
 function bootApp(){
-  if(bootApp._done)return;
   bootApp._done=true;
   var app=document.getElementById('main-app');
   if(app)app.style.display='';
-  loadData();
-  render();
-  initDailyHeader();
-  initOnboard();
+  // Forcer un reflow avant render
+  setTimeout(function(){
+    loadData();
+    render();
+    initDailyHeader();
+    initOnboard();
+    // Cacher splash si encore visible
+    var sp=document.getElementById('splash');
+    if(sp)sp.classList.add('hide');
+  },50);
 }
 bootApp._done=false;
 
