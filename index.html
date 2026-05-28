@@ -2137,10 +2137,16 @@ async function authOnLogin(user){
 async function authSignOut(){
   var sb=getSB();
   await sb.auth.signOut();
+  // Cacher tout
   document.getElementById('paywall-screen').style.display='none';
-  document.getElementById('main-app').style.display='none';
+  var app=document.getElementById('main-app');
+  if(app)app.style.display='none';
+  // Réafficher login
   document.getElementById('auth-screen').style.display='flex';
   authTab('login');
+  // Vider les champs
+  document.getElementById('auth-email').value='';
+  document.getElementById('auth-pwd').value='';
 }
 
 async function initAuth(){
@@ -2187,21 +2193,15 @@ async function initAuth(){
 }
 
 function bootApp(){
-  bootApp._done=true;
   var app=document.getElementById('main-app');
   if(app)app.style.display='';
-  // Forcer un reflow avant render
-  setTimeout(function(){
-    loadData();
-    render();
-    initDailyHeader();
-    initOnboard();
-    // Cacher splash si encore visible
-    var sp=document.getElementById('splash');
-    if(sp)sp.classList.add('hide');
-  },50);
+  var sp=document.getElementById('splash');
+  if(sp)sp.classList.add('hide');
+  loadData();
+  render();
+  initDailyHeader();
+  initOnboard();
 }
-bootApp._done=false;
 
 // ── Boot ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',function(){
