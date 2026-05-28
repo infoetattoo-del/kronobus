@@ -2080,12 +2080,13 @@ async function authSubmit(){
       if(r.error)throw r.error;
       // Email de bienvenue via Resend
       try{
-        fetch('https://yflsvgqpdcgcdnrsqbth.supabase.co/functions/v1/send-welcome',{
+        var welcomeRes=await fetch('https://yflsvgqpdcgcdnrsqbth.supabase.co/functions/v1/send-welcome',{
           method:'POST',
-          headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbHN2Z3FwZGNnY2RucnNxYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3Mjc0NTEsImV4cCI6MjA5NTMwMzQ1MX0.Kv_upu2wNPivdrx04hgi3PzHJprNQIv3UrbrCa5t9n8'},
+          headers:{'Content-Type':'application/json'},
           body:JSON.stringify({email:email})
         });
-      }catch(e){}
+        console.log('Welcome email status:',welcomeRes.status);
+      }catch(e){console.log('Welcome email error:',e.message);}
       authShowErr('✓ Compte créé ! Vérifiez votre boîte mail 📬');
       btn.disabled=false; btn.textContent='Créer mon compte';
     } else {
