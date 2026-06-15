@@ -641,6 +641,7 @@ function renderDay(){
   var monthNames=['Jan','F\u00e9v','Mar','Avr','Mai','Juin','Juil','Ao\u00fbt','Sep','Oct','Nov','D\u00e9c'];
   var h='';
   var tot=totalDay(key);
+  var isFD=isFullDay(key);
   var ampJ=null,fS='',fE='';
   if(rec.seg){
     var allS=rec.seg.filter(function(s){return s.s;}).map(function(s){var p=s.s.split(':');return +p[0]*60+ +p[1];});
@@ -662,6 +663,18 @@ function renderDay(){
     var dashWork=circ*(pctWork/100),dashAmp=circ*(pctAmp/100);
     var colWork=pctWork>=100?'#f43f5e':pctWork>=80?'#FF9500':'#1b2cc1';
     var colAmp=pctAmp>=100?'#f43f5e':pctAmp>=80?'#FF9500':'#0891b2';
+    // ── Toggle Heures / Jour entier
+    h+='<div style="display:flex;background:rgba(27,44,193,.07);border-radius:14px;padding:3px;margin-bottom:14px;gap:3px">';
+    h+='<button onclick="setFullDay(\''+key+'\',false)" style="flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+(isFD?'transparent':'#1b2cc1')+';color:'+(isFD?'#6e6e73':'#fff')+';box-shadow:'+(isFD?'none':'0 3px 10px rgba(27,44,193,.3)')+'">Heures</button>';
+    h+='<button onclick="setFullDay(\''+key+'\',true)" style="flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+(isFD?'#1b2cc1':'transparent')+';color:'+(isFD?'#fff':'#6e6e73')+';box-shadow:'+(isFD?'0 3px 10px rgba(27,44,193,.3)':'none')+'">Jour entier</button>';
+    h+='</div>';
+    if(isFD){
+      h+='<div style="background:rgba(27,44,193,.06);border-radius:18px;padding:24px;text-align:center;margin-bottom:12px">';
+      h+='<div style="font-size:40px;margin-bottom:10px">✓</div>';
+      h+='<div style="font-size:17px;font-weight:800;color:#1b2cc1">Journée complète</div>';
+      h+='<div style="font-size:12px;color:#6e6e73;margin-top:6px">1 jour travaillé comptabilisé</div>';
+      h+='</div>';
+    } else {
     h+='<div class="total-card">';
     h+='<div class="card-lbl" style="font-size:13px;font-weight:800;color:#1d1d1f;letter-spacing:.3px">TOTAL JOURNÉE'+(we?' · WEEK-END':'')+'</div>';
     // SVG circles row
@@ -738,6 +751,7 @@ function renderDay(){
 
     h+='<button class="pbtn pin" style="margin-top:8px" onclick="addSeg(\''+key+'\')">';
   h+='+ Ajouter un temps de travail</button>';
+  } // fin else Heures
 
   
   // ── Bloc jour off
@@ -1454,7 +1468,9 @@ function renderMonth(){
     var cls='cday'+(isT?' today':'')+(t>0?' worked':'')+(isEmpty&&!we?' empty-day':'')+(we&&t>0?' we-day':'')+(night&&t>0?' night-day':'');
     h+='<div class="'+cls+'" onclick="gotoDay('+y+','+m+','+d+')">';
     h+='<span class="cdn">'+d+'</span>';
-    if(t>0&&!isT)h+='<div class="cdot" style="background:'+(we?'#f43f5e':night?'#0891b2':'#1b2cc1')+'"></div>';
+    var isFD3=isFullDay(key);
+    if(isFD3&&!isT){h+='<div style="font-size:9px;line-height:1;color:#1b2cc1;font-weight:900">✓</div>';}
+    else if(t>0&&!isT){h+='<div class="cdot" style="background:'+(we?'#f43f5e':night?'#0891b2':'#1b2cc1')+'"></div>';}
     h+='</div>';
   }
   var rem=(7-((first+days)%7))%7;
@@ -2039,7 +2055,11 @@ var _authMode = 'login';
 
 function getSB(){
   if(!_sb && window.supabase)
-    _sb = window.supabase.createClient('https://yflsvgqpdcgcdnrsqbth.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbHN2Z3FwZGNnY2RucnNxYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3Mjc0NTEsImV4cCI6MjA5NTMwMzQ1MX0.Kv_upu2wNPivdrx04hgi3PzHJprNQIv3UrbrCa5t9n8');
+    _sb = window.supabase.createClient(
+      'https://yflsvgqpdcgcdnrsqbth.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbHN2Z3FwZGNnY2RucnNxYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3Mjc0NTEsImV4cCI6MjA5NTMwMzQ1MX0.Kv_upu2wNPivdrx04hgi3PzHJprNQIv3UrbrCa5t9n8',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}
+    );
   return _sb;
 }
 
@@ -2225,6 +2245,34 @@ function bootApp(){
   },50);
 }
 bootApp._done=false;
+
+
+function isFullDay(k){return data[k]&&data[k].fullDay===true;}
+function setFullDay(k,val){
+  var r=getOrCreate(k);
+  r.fullDay=val;
+  if(val){r.seg=[{s:null,e:null}];}  // Vider les segments si jour entier
+  saveData();renderDay();
+}
+function getContratType(){
+  var p=getProfile();
+  return p&&p.contratType?p.contratType:'heures'; // 'heures' ou 'jours'
+}
+function getContratJours(){
+  var p=getProfile();
+  return p&&p.contratJours?parseInt(p.contratJours):200;
+}
+function countWorkedDays(year){
+  var total=0;
+  for(var mo=0;mo<12;mo++){
+    var days=new Date(year,mo+1,0).getDate();
+    for(var d=1;d<=days;d++){
+      var key=year+'-'+mo+'-'+d;
+      if(isFullDay(key)||(totalDay(key)>0))total++;
+    }
+  }
+  return total;
+}
 
 // ── Boot ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',function(){
