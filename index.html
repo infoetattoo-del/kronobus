@@ -2156,24 +2156,31 @@ async function authOnLogin(user){
     bootApp();
     return;
   }
-  var sb=getSB();
-  var {data:profile}=await sb.from('profiles').select('*').eq('id',user.id).single();
-  var now=new Date();
-  var isPaid=profile&&(profile.status==='active'||profile.status==='enterprise');
-  var trialEnd=profile&&profile.trial_end?new Date(profile.trial_end):null;
-  var isTrial=!trialEnd||(trialEnd>now);
-  if(!profile){
-    var te=new Date(); te.setDate(te.getDate()+14);
-    await sb.from('profiles').insert({id:user.id,email:user.email,trial_end:te.toISOString(),status:'trial'});
-    isTrial=true;
-  }
-  if(isPaid||isTrial){
+  try{
+    var sb=getSB();
+    var {data:profile,error:profErr}=await sb.from('profiles').select('*').eq('id',user.id).single();
+    var now=new Date();
+    var isPaid=profile&&(profile.status==='active'||profile.status==='enterprise');
+    var trialEnd=profile&&profile.trial_end?new Date(profile.trial_end):null;
+    var isTrial=!trialEnd||(trialEnd>now);
+    if(!profile||profErr){
+      // Créer le profil
+      var te=new Date(); te.setDate(te.getDate()+14);
+      await sb.from('profiles').insert({id:user.id,email:user.email,trial_end:te.toISOString(),status:'trial'});
+      isTrial=true;
+    }
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('paywall-screen').style.display='none';
-    bootApp();
-  } else {
+    if(isPaid||isTrial){
+      bootApp();
+    } else {
+      document.getElementById('paywall-screen').style.display='flex';
+    }
+  } catch(e){
+    // En cas d'erreur Supabase — lancer l'app quand même si session valide
+    console.log('Profile error:',e.message);
     document.getElementById('auth-screen').style.display='none';
-    document.getElementById('paywall-screen').style.display='flex';
+    bootApp();
   }
 }
 
