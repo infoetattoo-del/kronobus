@@ -2194,64 +2194,63 @@ async function authSignOut(){
 }
 
 async function initAuth(){
-  // Timeout sécurité : si Supabase ne répond pas en 5s, afficher auth
-  var safetyTimer=setTimeout(function(){
+  function showSplash(hide){
     var sp=document.getElementById('splash');
-    if(sp)sp.classList.add('hide');
-    var as=document.getElementById('auth-screen');
-    if(as&&as.style.display==='none')as.style.display='flex';
-  },5000);
+    if(sp&&hide)sp.classList.add('hide');
+  }
+  function showAuth(){
+    showSplash(true);
+    document.getElementById('auth-screen').style.display='flex';
+    document.getElementById('paywall-screen').style.display='none';
+    document.getElementById('main-app').style.display='none';
+    var tb=document.getElementById('main-tabbar');
+    if(tb)tb.style.display='none';
+  }
 
   var sb=getSB();
-  if(!sb){
-    clearTimeout(safetyTimer);
-    var sp=document.getElementById('splash');
-    if(sp)sp.classList.add('hide');
-    document.getElementById('auth-screen').style.display='flex';
-    return;
+  if(!sb){showAuth();return;}
+
+  // Timeout 5s
+  var timer=setTimeout(showAuth,5000);
+
+  try{
+    var res=await sb.auth.getSession();
+    clearTimeout(timer);
+    var session=res&&res.data&&res.data.session?res.data.session:null;
+    if(session&&session.user){
+      await authOnLogin(session.user);
+    } else {
+      showAuth();
+    }
+  } catch(e){
+    clearTimeout(timer);
+    showAuth();
   }
 
   sb.auth.onAuthStateChange(async function(event,session){
     if(event==='SIGNED_IN'&&session){
-      clearTimeout(safetyTimer);
+      document.getElementById('auth-screen').style.display='none';
       await authOnLogin(session.user);
+    } else if(event==='SIGNED_OUT'){
+      showAuth();
     }
   });
-
-  try{
-    var {data:{session}}=await sb.auth.getSession();
-    clearTimeout(safetyTimer);
-    if(session&&session.user){
-      await authOnLogin(session.user);
-    } else {
-      var sp=document.getElementById('splash');
-      if(sp)sp.classList.add('hide');
-      document.getElementById('auth-screen').style.display='flex';
-    }
-  } catch(e){
-    clearTimeout(safetyTimer);
-    var sp=document.getElementById('splash');
-    if(sp)sp.classList.add('hide');
-    document.getElementById('auth-screen').style.display='flex';
-  }
 }
 
 function bootApp(){
-  bootApp._done=true;
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('paywall-screen').style.display='none';
   var app=document.getElementById('main-app');
   if(app)app.style.display='';
-  // Forcer un reflow avant render
-  setTimeout(function(){
-    loadData();
-    render();
-    initDailyHeader();
-    initOnboard();
-    // Cacher splash si encore visible
-    var sp=document.getElementById('splash');
-    if(sp)sp.classList.add('hide');
-  },50);
+  var tb=document.getElementById('main-tabbar');
+  if(tb)tb.style.display='';
+  var sp=document.getElementById('splash');
+  if(sp)sp.classList.add('hide');
+  loadData();
+  render();
+  initDailyHeader();
+  initOnboard();
 }
-bootApp._done=false;
 
 
 function isFullDay(k){return data[k]&&data[k].fullDay===true;}
