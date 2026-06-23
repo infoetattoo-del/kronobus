@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -17,6 +18,38 @@
 html,body{height:100%;background:linear-gradient(160deg,#eaedff 0%,#f2edff 45%,#fce8f3 100%);background-attachment:fixed;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',sans-serif}
 body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh}
 .app{width:100%;max-width:430px;background:transparent;min-height:100%;padding:env(safe-area-inset-top,56px) 24px 0;position:relative;margin:0 auto}
+
+.auth-screen{position:fixed;inset:0;z-index:11000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#eaedff 0%,#f2edff 45%,#fce8f3 100%)}
+.auth-card{background:rgba(255,255,255,.97);border-radius:28px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(27,44,193,.15)}
+.auth-logo-k{width:80px;height:80px;border-radius:22px;display:block;margin:0 auto 18px;object-fit:contain}
+.auth-title{font-size:22px;font-weight:800;color:#1a1a2e;text-align:center;margin-bottom:6px}
+.auth-sub{font-size:13px;color:#6e6e73;text-align:center;margin-bottom:24px;line-height:1.5}
+.auth-trial{background:rgba(16,185,129,.1);border-radius:10px;padding:8px 14px;color:#10b981;font-size:12px;font-weight:700;text-align:center;margin-bottom:16px}
+.auth-tab-row{display:flex;background:rgba(27,44,193,.07);border-radius:14px;padding:3px;margin-bottom:20px;gap:3px}
+.auth-tab{flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:#6e6e73;transition:all .2s}
+.auth-tab.on{background:#1b2cc1;color:#fff;box-shadow:0 3px 10px rgba(27,44,193,.3)}
+.auth-inp-wrap{margin-bottom:12px}
+.auth-lbl{font-size:11px;font-weight:700;color:#6e6e73;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:block}
+.auth-inp{width:100%;padding:12px 14px;border:1.5px solid rgba(27,44,193,.15);border-radius:13px;font-family:inherit;font-size:15px;color:#1a1a2e;background:rgba(27,44,193,.03);outline:none;box-sizing:border-box;transition:border .2s}
+.auth-inp:focus{border-color:#1b2cc1;background:#fff}
+.auth-btn{width:100%;padding:15px;border:none;border-radius:18px;background:#1b2cc1;color:#fff;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;margin-top:6px;box-shadow:0 6px 20px rgba(27,44,193,.3)}
+.auth-btn:disabled{opacity:.5}
+.auth-btn-google{width:100%;padding:13px;border:1.5px solid rgba(27,44,193,.15);border-radius:16px;background:#fff;color:#1a1a2e;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px}
+.auth-sep{display:flex;align-items:center;gap:10px;margin:12px 0;color:#adadb8;font-size:12px}
+.auth-sep::before,.auth-sep::after{content:'';flex:1;height:1px;background:rgba(27,44,193,.1)}
+.auth-err{background:rgba(244,63,94,.08);border-radius:12px;padding:10px 14px;color:#f43f5e;font-size:13px;font-weight:600;margin-bottom:12px;display:none;text-align:center}
+.paywall-screen{position:fixed;inset:0;z-index:11000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#eaedff 0%,#f2edff 45%,#fce8f3 100%)}
+.paywall-card{background:rgba(255,255,255,.97);border-radius:28px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(27,44,193,.15);text-align:center}
+.pw-icon{font-size:48px;margin-bottom:16px}
+.pw-title{font-size:22px;font-weight:800;color:#1a1a2e;margin-bottom:8px}
+.pw-sub{font-size:13px;color:#6e6e73;margin-bottom:20px;line-height:1.6}
+.pw-price{background:#1b2cc1;border-radius:16px;padding:18px;margin-bottom:18px}
+.pw-amount{font-size:34px;font-weight:800;color:#fff}
+.pw-period{font-size:13px;color:rgba(255,255,255,.7);margin-top:4px}
+.pw-feats{text-align:left;margin-bottom:20px;display:flex;flex-direction:column;gap:8px}
+.pw-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:#1a1a2e}
+.pw-check{width:20px;height:20px;border-radius:50%;background:rgba(16,185,129,.15);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.pw-logout{font-size:13px;color:#adadb8;margin-top:12px;cursor:pointer;text-decoration:underline;background:none;border:none;font-family:inherit}
 .screen-pad{height:calc(env(safe-area-inset-bottom,0px) + 90px)}
 .screen-pad-xl{height:calc(env(safe-area-inset-bottom,0px) + 320px)}
 
@@ -512,7 +545,7 @@ body.dark{background:#111118}
   <div class="screen"    id="sc-report"></div>
 </div>
 
-<nav class="tabbar">
+<nav class="tabbar" id="main-tabbar" style="display:none">
   <button class="tbtab on" id="tb-day" onclick="setView('day')">
     <div class="tb-ico"><svg class="tb-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
     <span class="tb-lbl">Jour</span>
@@ -586,7 +619,7 @@ function ft(h,m){return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
 function pt(s){if(!s)return null;var p=s.split(':');return{h:+p[0],m:+p[1]};}
 function calcDur(s,e){if(!s||!e)return null;var a=pt(s),b=pt(e);var d=(b.h*60+b.m)-(a.h*60+a.m);if(d<0)d+=1440;return d;}
 function fmtD(m){if(!m)return '--';var h=Math.floor(m/60),mn=m%60;return mn>0?h+'h'+String(mn).padStart(2,'0'):h+'h';}
-function totalDay(key){var d=data[key];if(!d)return 0;if(d.fullDay)return 480;if(!d.seg)return 0;return d.seg.reduce(function(s,g){return s+(calcDur(g.s,g.e)||0);},0);}
+function totalDay(key){var d=data[key];if(!d)return 0;if(d.fullDay)return 1440;if(!d.seg)return 0;return d.seg.reduce(function(s,g){return s+(calcDur(g.s,g.e)||0);},0);}
 function getOrCreate(k){if(!data[k])data[k]={seg:[{s:null,e:null}],note:'',photos:[]};if(!data[k].photos)data[k].photos=[];return data[k];}
 function isWE(d){return d.getDay()===0||d.getDay()===6;}
 function isNight(key){var d=data[key];if(!d||!d.seg)return false;return d.seg.some(function(g){if(!g.e)return false;var t=pt(g.e);return t.h>=22||t.h<5;});}
@@ -640,8 +673,8 @@ function renderDay(){
   var dayNames=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   var monthNames=['Jan','F\u00e9v','Mar','Avr','Mai','Juin','Juil','Ao\u00fbt','Sep','Oct','Nov','D\u00e9c'];
   var h='';
-  var tot=totalDay(key);
   var isFD=isFullDay(key);
+  var tot=totalDay(key);
   var ampJ=null,fS='',fE='';
   if(rec.seg){
     var allS=rec.seg.filter(function(s){return s.s;}).map(function(s){var p=s.s.split(':');return +p[0]*60+ +p[1];});
@@ -653,22 +686,22 @@ function renderDay(){
       fE=Math.floor(t1/60)+':'+(t1%60<10?'0':'')+t1%60;
     }
   }
-  // ── Toggle Heures / Jour entier — toujours visible
+  // ── Toggle Heures / Jour entier
   h+='<div style="display:flex;background:rgba(27,44,193,.07);border-radius:14px;padding:3px;margin-bottom:14px;gap:3px">';
-    h+='<button onclick="setFullDay(\''+key+'\',false)" style="flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+(isFD?'transparent':'#1b2cc1')+';color:'+(isFD?'#6e6e73':'#fff')+';box-shadow:'+(isFD?'none':'0 3px 10px rgba(27,44,193,.3)')+'">Heures</button>';
-    h+='<button onclick="setFullDay(\''+key+'\',true)" style="flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+(isFD?'#1b2cc1':'transparent')+';color:'+(isFD?'#fff':'#6e6e73')+';box-shadow:'+(isFD?'0 3px 10px rgba(27,44,193,.3)':'none')+'">Jour entier</button>';
+  h+='<button onclick="setFullDay(\''+key+'\',false)" style="flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+(isFD?'transparent':'#1b2cc1')+';color:'+(isFD?'#6e6e73':'#fff')+'">Heures</button>';
+  h+='<button onclick="setFullDay(\''+key+'\',true)" style="flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+(isFD?'#1b2cc1':'transparent')+';color:'+(isFD?'#fff':'#6e6e73')+'">Jour entier</button>';
+  h+='</div>';
+  if(isFD){
+    h+='<div style="background:rgba(27,44,193,.06);border-radius:18px;padding:24px;text-align:center;margin-bottom:12px">';
+    h+='<div style="font-size:40px;margin-bottom:10px">✓</div>';
+    h+='<div style="font-size:17px;font-weight:800;color:#1b2cc1">Journée complète</div>';
+    h+='<div style="font-size:12px;color:#6e6e73;margin-top:6px">24h comptabilisées</div>';
     h+='</div>';
-    if(isFD){
-      h+='<div style="background:rgba(27,44,193,.06);border-radius:18px;padding:24px;text-align:center;margin-bottom:12px">';
-      h+='<div style="font-size:40px;margin-bottom:10px">✓</div>';
-      h+='<div style="font-size:17px;font-weight:800;color:#1b2cc1">Journée complète</div>';
-      h+='<div style="font-size:12px;color:#6e6e73;margin-top:6px">1 jour travaillé comptabilisé</div>';
-      h+='</div>';
-    } else { // mode heures
-    if(tot>0){
+  } else {
+  if(tot>0){
     // Progress circles
-    var maxWork=600;
-    var maxAmp=720;
+    var maxWork=600; // 10h legal max
+    var maxAmp=720;  // 12h legal max amplitude
     var pctWork=Math.min(Math.round((tot/maxWork)*100),100);
     var pctAmp=ampJ?Math.min(Math.round((ampJ/maxAmp)*100),100):0;
     var r=44,circ=2*Math.PI*r;
@@ -725,8 +758,9 @@ function renderDay(){
       h+='</div>';
     }
     h+="</div>";
-  } // fin if(tot>0)
-  // Segments
+  }
+  } // fin else heures
+
   if(!isFD){
   var pastelClasses=['card-amp-0','card-amp-1','card-amp-2','card-amp-3','card-amp-4'];
   rec.seg.forEach(function(sg,i){
@@ -752,10 +786,8 @@ function renderDay(){
 
     h+='<button class="pbtn pin" style="margin-top:8px" onclick="addSeg(\''+key+'\')">';
   h+='+ Ajouter un temps de travail</button>';
-  } // fin boucle seg
-  } // fin if(!isFD) et else
+  } // fin if(!isFD)
 
-  
   // ── Bloc jour off
   var dayOffTypes=[
     {k:'repos',icon:'😴',name:'Repos',desc:'Journée de repos',col:'#6e6e73',bg:'rgba(110,110,115,.1)',shadow:'rgba(110,110,115,.2)'},
@@ -1470,9 +1502,7 @@ function renderMonth(){
     var cls='cday'+(isT?' today':'')+(t>0?' worked':'')+(isEmpty&&!we?' empty-day':'')+(we&&t>0?' we-day':'')+(night&&t>0?' night-day':'');
     h+='<div class="'+cls+'" onclick="gotoDay('+y+','+m+','+d+')">';
     h+='<span class="cdn">'+d+'</span>';
-    var isFD3=isFullDay(key);
-    if(isFD3&&!isT){h+='<div style="font-size:9px;line-height:1;color:#1b2cc1;font-weight:900">✓</div>';}
-    else if(t>0&&!isT){h+='<div class="cdot" style="background:'+(we?'#f43f5e':night?'#0891b2':'#1b2cc1')+'"></div>';}
+    if(t>0&&!isT)h+='<div class="cdot" style="background:'+(we?'#f43f5e':night?'#0891b2':'#1b2cc1')+'"></div>';
     h+='</div>';
   }
   var rem=(7-((first+days)%7))%7;
@@ -1998,6 +2028,9 @@ function openSettings(){
   b+='<div style="margin-top:8px;padding-top:12px;border-top:1px solid rgba(27,44,193,.08)">';
   b+='<button onclick="authSignOut()" style="width:100%;padding:12px;background:rgba(244,63,94,.08);color:#f43f5e;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">🚪 Se déconnecter</button>';
   b+='</div>';
+  b+='<div style="margin-top:8px;padding-top:12px;border-top:1px solid rgba(27,44,193,.08)">';
+  b+='<button onclick="closeModal();setTimeout(authSignOut,100)" style="width:100%;padding:12px;background:rgba(244,63,94,.08);color:#f43f5e;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Se déconnecter</button>';
+  b+='</div>';
   // ── Version
   if(ver)b+='<div style="text-align:center;font-size:11px;color:#adadb8;padding:8px 0 2px">'+ver+'</div>';
   b+='</div>';
@@ -2051,23 +2084,13 @@ function fmtEcart(mins){
 }
 function repMode(m){reportMode=m;renderReport();}
 
-
-function $el(id){return document.getElementById(id);}
-function $show(id){var e=document.getElementById(id);if(e)e.style.display='';}
-function $hide(id){var e=document.getElementById(id);if(e)e.style.display='none';}
-function $flex(id){var e=document.getElementById(id);if(e)e.style.display='flex';}
-
 // ── SUPABASE AUTH ─────────────────────────────────────────────────────────
 var _sb = null;
 var _authMode = 'login';
 
 function getSB(){
   if(!_sb && window.supabase)
-    _sb = window.supabase.createClient(
-      'https://yflsvgqpdcgcdnrsqbth.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbHN2Z3FwZGNnY2RucnNxYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3Mjc0NTEsImV4cCI6MjA5NTMwMzQ1MX0.Kv_upu2wNPivdrx04hgi3PzHJprNQIv3UrbrCa5t9n8',
-      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}
-    );
+    _sb = window.supabase.createClient('https://yflsvgqpdcgcdnrsqbth.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbHN2Z3FwZGNnY2RucnNxYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3Mjc0NTEsImV4cCI6MjA5NTMwMzQ1MX0.Kv_upu2wNPivdrx04hgi3PzHJprNQIv3UrbrCa5t9n8');
   return _sb;
 }
 
@@ -2133,7 +2156,6 @@ async function authSubmit(){
     } else {
       var r=await sb.auth.signInWithPassword({email:email,password:pwd});
       if(r.error)throw r.error;
-      localStorage.setItem('kb_last_email',email);
       await authOnLogin(r.data.user);
     }
   } catch(e){
@@ -2160,35 +2182,229 @@ async function authOnLogin(user){
   // Comptes admin — accès illimité
   var ADMIN_EMAILS=['kronobus@gmail.com'];
   if(ADMIN_EMAILS.indexOf(user.email)>-1){
-    $hide('auth-screen');
-    $hide('paywall-screen');
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('paywall-screen').style.display='none';
     bootApp();
     return;
   }
+  var sb=getSB();
+  var {data:profile}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  var now=new Date();
+  var isPaid=profile&&(profile.status==='active'||profile.status==='enterprise');
+  var trialEnd=profile&&profile.trial_end?new Date(profile.trial_end):null;
+  var isTrial=!trialEnd||(trialEnd>now);
+  if(!profile){
+    var te=new Date(); te.setDate(te.getDate()+14);
+    await sb.from('profiles').insert({id:user.id,email:user.email,trial_end:te.toISOString(),status:'trial'});
+    isTrial=true;
+  }
+  if(isPaid||isTrial){
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('paywall-screen').style.display='none';
+    bootApp();
+  } else {
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('paywall-screen').style.display='flex';
+  }
+}
+
+async function authSignOut(){
+  var sb=getSB();
+  await sb.auth.signOut();
+  document.getElementById('paywall-screen').style.display='none';
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  authTab('login');
+}
+
+async function initAuth(){
+  // Timeout sécurité : si Supabase ne répond pas en 5s, afficher auth
+  var safetyTimer=setTimeout(function(){
+    var sp=document.getElementById('splash');
+    if(sp)sp.classList.add('hide');
+    var as=document.getElementById('auth-screen');
+    if(as&&as.style.display==='none')as.style.display='flex';
+  },5000);
+
+  var sb=getSB();
+  if(!sb){
+    clearTimeout(safetyTimer);
+    var sp=document.getElementById('splash');
+    if(sp)sp.classList.add('hide');
+    document.getElementById('auth-screen').style.display='flex';
+    return;
+  }
+
+  sb.auth.onAuthStateChange(async function(event,session){
+    if(event==='SIGNED_IN'&&session){
+      clearTimeout(safetyTimer);
+      await authOnLogin(session.user);
+    }
+  });
+
+  try{
+    var {data:{session}}=await sb.auth.getSession();
+    clearTimeout(safetyTimer);
+    if(session&&session.user){
+      await authOnLogin(session.user);
+    } else {
+      var sp=document.getElementById('splash');
+      if(sp)sp.classList.add('hide');
+      document.getElementById('auth-screen').style.display='flex';
+    }
+  } catch(e){
+    clearTimeout(safetyTimer);
+    var sp=document.getElementById('splash');
+    if(sp)sp.classList.add('hide');
+    document.getElementById('auth-screen').style.display='flex';
+  }
+}
+
+function bootApp(){
+  bootApp._done=true;
+  var app=document.getElementById('main-app');
+  if(app)app.style.display='';
+  // Forcer un reflow avant render
+  setTimeout(function(){
+    loadData();
+    render();
+    initDailyHeader();
+    initOnboard();
+    // Cacher splash si encore visible
+    var sp=document.getElementById('splash');
+    if(sp)sp.classList.add('hide');
+  },50);
+}
+bootApp._done=false;
+
+
+function isFullDay(k){return !!(data[k]&&data[k].fullDay);}
+function setFullDay(k,val){
+  var r=getOrCreate(k);
+  r.fullDay=val?true:false;
+  saveData();renderDay();
+}
+
+// ── HELPERS ─────────────────────────────────────────────────────────────────
+function $id(id){return document.getElementById(id);}
+function $show(id){var e=$id(id);if(e)e.style.display='';}
+function $hide(id){var e=$id(id);if(e)e.style.display='none';}
+function $flex(id){var e=$id(id);if(e)e.style.display='flex';}
+
+// ── SUPABASE ─────────────────────────────────────────────────────────────────
+var _sb=null;
+var _authMode='login';
+
+function getSB(){
+  if(!_sb&&window.supabase)
+    _sb=window.supabase.createClient(
+      'https://yflsvgqpdcgcdnrsqbth.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbHN2Z3FwZGNnY2RucnNxYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3Mjc0NTEsImV4cCI6MjA5NTMwMzQ1MX0.Kv_upu2wNPivdrx04hgi3PzHJprNQIv3UrbrCa5t9n8',
+      {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}
+    );
+  return _sb;
+}
+
+function togglePwd(id,btn){
+  var inp=$id(id);
+  if(!inp)return;
+  if(inp.type==='password'){inp.type='text';btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';}
+  else{inp.type='password';btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';}
+}
+
+function authTab(mode){
+  _authMode=mode;
+  var tl=$id('tab-login'),ts=$id('tab-signup'),sb=$id('auth-submit');
+  var fw=$id('forgot-wrap'),cw=$id('auth-confirm-wrap');
+  if(tl)tl.className='auth-tab'+(mode==='login'?' on':'');
+  if(ts)ts.className='auth-tab'+(mode==='signup'?' on':'');
+  if(sb)sb.textContent=mode==='login'?'Se connecter':'Créer mon compte';
+  if(cw)cw.style.display=mode==='signup'?'block':'none';
+  if(fw)fw.style.display=mode==='login'?'block':'none';
+  var err=$id('auth-err');if(err)err.style.display='none';
+}
+
+function authShowErr(msg,green){
+  var el=$id('auth-err');if(!el)return;
+  el.textContent=msg;
+  el.style.display='block';
+  el.style.background=green?'rgba(16,185,129,.1)':'rgba(244,63,94,.08)';
+  el.style.color=green?'#10b981':'#f43f5e';
+}
+
+async function authForgot(){
+  var email=($id('auth-email').value||'').trim();
+  if(!email){authShowErr('Entrez votre email d\'abord');return;}
+  var sb=getSB();
+  try{
+    var {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://app.kronobus.fr'});
+    if(error)throw error;
+    authShowErr('Email de réinitialisation envoyé !',true);
+  }catch(e){authShowErr('Erreur : '+(e.message||e));}
+}
+
+async function authSubmit(){
+  var email=($id('auth-email').value||'').trim();
+  var pwd=$id('auth-pwd').value;
+  var btn=$id('auth-submit');
+  var err=$id('auth-err');if(err)err.style.display='none';
+  if(!email||!pwd){authShowErr('Email et mot de passe requis');return;}
+  if(btn){btn.disabled=true;btn.textContent='...';}
+  var sb=getSB();
+  try{
+    if(_authMode==='signup'){
+      if(pwd.length<6){authShowErr('6 caractères minimum');if(btn){btn.disabled=false;btn.textContent='Créer mon compte';}return;}
+      var r=await sb.auth.signUp({email:email,password:pwd});
+      if(r.error)throw r.error;
+      // Email bienvenue
+      try{fetch('https://yflsvgqpdcgcdnrsqbth.supabase.co/functions/v1/send-welcome',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})});}catch(e2){}
+      authShowErr('Compte créé ! Vous pouvez vous connecter',true);
+      if(btn){btn.disabled=false;btn.textContent='Créer mon compte';}
+      setTimeout(function(){authTab('login');},2000);
+    } else {
+      var r=await sb.auth.signInWithPassword({email:email,password:pwd});
+      if(r.error)throw r.error;
+      localStorage.setItem('kb_last_email',email);
+      await authOnLogin(r.data.user);
+    }
+  } catch(e){
+    var msg=e.message||'Erreur';
+    if(msg.includes('Invalid login')||msg.includes('invalid'))msg='Email ou mot de passe incorrect';
+    if(msg.includes('already registered')||msg.includes('User already registered')){
+      authShowErr('Email déjà utilisé — connectez-vous');
+      setTimeout(function(){authTab('login');},2000);
+      if(btn){btn.disabled=false;btn.textContent='Créer mon compte';}return;
+    }
+    if(msg.includes('pattern')||msg.includes('format'))msg='Email ou mot de passe incorrect';
+    authShowErr(msg);
+    if(btn){btn.disabled=false;btn.textContent=_authMode==='login'?'Se connecter':'Créer mon compte';}
+  }
+}
+
+async function authGoogle(){
+  var sb=getSB();
+  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://app.kronobus.fr'}});
+}
+
+async function authOnLogin(user){
+  var ADMIN=['kronobus@gmail.com'];
+  if(ADMIN.indexOf(user.email)>-1){$hide('auth-screen');$hide('paywall-screen');bootApp();return;}
   try{
     var sb=getSB();
-    var {data:profile,error:profErr}=await sb.from('profiles').select('*').eq('id',user.id).single();
+    var {data:profile}=await sb.from('profiles').select('*').eq('id',user.id).single();
     var now=new Date();
     var isPaid=profile&&(profile.status==='active'||profile.status==='enterprise');
     var trialEnd=profile&&profile.trial_end?new Date(profile.trial_end):null;
     var isTrial=!trialEnd||(trialEnd>now);
-    if(!profile||profErr){
-      // Créer le profil
-      var te=new Date(); te.setDate(te.getDate()+14);
+    if(!profile){
+      var te=new Date();te.setDate(te.getDate()+14);
       await sb.from('profiles').insert({id:user.id,email:user.email,trial_end:te.toISOString(),status:'trial'});
       isTrial=true;
     }
-    var _as=document.getElementById('auth-screen');
-    var _pw=document.getElementById('paywall-screen');
-    if(_as)_as.style.display='none';
-    if(isPaid||isTrial){
-      bootApp();
-    } else {
-      if(_pw)_pw.style.display='flex';
-    }
-  } catch(e){
-    // En cas d'erreur Supabase — lancer l'app quand même si session valide
-    console.log('Profile error:',e.message);
+    $hide('auth-screen');
+    if(isPaid||isTrial){bootApp();}
+    else{$flex('paywall-screen');}
+  }catch(e){
+    console.log('profile err:',e.message);
     $hide('auth-screen');
     bootApp();
   }
@@ -2196,109 +2412,48 @@ async function authOnLogin(user){
 
 async function authSignOut(){
   var sb=getSB();
-  await sb.auth.signOut();
-  $hide('paywall-screen');
-  $hide('main-app');
-  $flex('auth-screen');
-  authTab('login');
+  try{await sb.auth.signOut();}catch(e){}
+  $hide('paywall-screen');$hide('main-app');$hide('main-tabbar');
+  $flex('auth-screen');authTab('login');
+  var emailEl=$id('auth-email');
+  var lastEmail=localStorage.getItem('kb_last_email');
+  if(emailEl&&lastEmail)emailEl.value=lastEmail;
+  var pwdEl=$id('auth-pwd');if(pwdEl)pwdEl.value='';
 }
 
 async function initAuth(){
-  function showSplash(hide){
-    var sp=document.getElementById('splash');
-    if(sp&&hide)sp.classList.add('hide');
-  }
-  function showAuth(){
-    showSplash(true);
-    var as=document.getElementById('auth-screen');
-    if(as)as.style.display='flex';
-    var pw=document.getElementById('paywall-screen');
-    if(pw)pw.style.display='none';
-    var app=document.getElementById('main-app');
-    if(app)app.style.display='none';
-    var tb=document.getElementById('main-tabbar');
-    if(tb)tb.style.display='none';
-    // Pré-remplir le dernier email utilisé
-    var lastEmail=localStorage.getItem('kb_last_email');
-    var emailEl=document.getElementById('auth-email');
-    if(lastEmail&&emailEl&&!emailEl.value)emailEl.value=lastEmail;
-  }
-
   var sb=getSB();
-  if(!sb){showAuth();return;}
-
-  // Timeout 5s
-  var timer=setTimeout(showAuth,5000);
-
+  if(!sb){$hide('splash');$flex('auth-screen');return;}
+  var timer=setTimeout(function(){$hide('splash');$flex('auth-screen');},5000);
   try{
     var res=await sb.auth.getSession();
+    var session=res&&res.data?res.data.session:null;
     clearTimeout(timer);
-    var session=res&&res.data&&res.data.session?res.data.session:null;
-    if(session&&session.user){
-      await authOnLogin(session.user);
-    } else {
-      showAuth();
+    if(session&&session.user){await authOnLogin(session.user);}
+    else{
+      $hide('splash');$flex('auth-screen');
+      var emailEl=$id('auth-email');
+      var lastEmail=localStorage.getItem('kb_last_email');
+      if(emailEl&&lastEmail)emailEl.value=lastEmail;
     }
-  } catch(e){
-    clearTimeout(timer);
-    showAuth();
-  }
-
-  sb.auth.onAuthStateChange(async function(event,session){
-    if(event==='SIGNED_IN'&&session){
-      $hide('auth-screen');
-      await authOnLogin(session.user);
-    } else if(event==='SIGNED_OUT'){
-      showAuth();
-    }
+  }catch(e){clearTimeout(timer);$hide('splash');$flex('auth-screen');}
+  sb.auth.onAuthStateChange(async function(ev,session){
+    if(ev==='SIGNED_IN'&&session){$hide('auth-screen');await authOnLogin(session.user);}
+    else if(ev==='SIGNED_OUT'){$hide('main-app');$hide('main-tabbar');$flex('auth-screen');}
   });
 }
 
 function bootApp(){
-  var as=document.getElementById('auth-screen');
-  var pw=document.getElementById('paywall-screen');
-  var app=document.getElementById('main-app');
-  var tb=document.getElementById('main-tabbar');
-  var sp=document.getElementById('splash');
-  if(as)as.style.display='none';
-  if(pw)pw.style.display='none';
-  if(app)app.style.display='';
-  if(tb)tb.style.display='';
-  if(sp)sp.classList.add('hide');
-  try{loadData();}catch(e){console.log('loadData err',e);}
-  try{render();}catch(e){console.log('render err',e);}
-  try{initDailyHeader();}catch(e){console.log('header err',e);}
-  try{initOnboard();}catch(e){console.log('onboard err',e);}
+  $hide('auth-screen');$hide('paywall-screen');
+  $show('main-app');$show('main-tabbar');
+  var sp=$id('splash');if(sp)sp.classList.add('hide');
+  try{loadData();}catch(e){}
+  try{render();}catch(e){}
+  try{initDailyHeader();}catch(e){}
+  try{initOnboard();}catch(e){}
 }
 
-
-function isFullDay(k){return data[k]&&data[k].fullDay===true;}
-function setFullDay(k,val){
-  var r=getOrCreate(k);
-  r.fullDay=val;
-  if(val){r.seg=[{s:null,e:null}];}  // Vider les segments si jour entier
-  saveData();renderDay();
-}
-function getContratType(){
-  var p=getProfile();
-  return p&&p.contratType?p.contratType:'heures'; // 'heures' ou 'jours'
-}
-function getContratJours(){
-  var p=getProfile();
-  return p&&p.contratJours?parseInt(p.contratJours):200;
-}
-function countWorkedDays(year){
-  var total=0;
-  for(var mo=0;mo<12;mo++){
-    var days=new Date(year,mo+1,0).getDate();
-    for(var d=1;d<=days;d++){
-      var key=year+'-'+mo+'-'+d;
-      if(isFullDay(key)||(totalDay(key)>0))total++;
-    }
-  }
-  return total;
-}
-
+// Bouton déconnexion dans paramètres
 // ── Boot ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('importInput').addEventListener('change',function(){
