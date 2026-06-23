@@ -727,6 +727,7 @@ function renderDay(){
     h+="</div>";
   }
 
+  if(!isFD){
   var pastelClasses=['card-amp-0','card-amp-1','card-amp-2','card-amp-3','card-amp-4'];
   rec.seg.forEach(function(sg,i){
     var dur=calcDur(sg.s,sg.e);
@@ -751,7 +752,8 @@ function renderDay(){
 
     h+='<button class="pbtn pin" style="margin-top:8px" onclick="addSeg(\''+key+'\')">';
   h+='+ Ajouter un temps de travail</button>';
-  } // fin else Heures
+  } // fin boucle seg
+  } // fin if(!isFD)
 
   
   // ── Bloc jour off
