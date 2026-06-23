@@ -586,7 +586,7 @@ function ft(h,m){return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
 function pt(s){if(!s)return null;var p=s.split(':');return{h:+p[0],m:+p[1]};}
 function calcDur(s,e){if(!s||!e)return null;var a=pt(s),b=pt(e);var d=(b.h*60+b.m)-(a.h*60+a.m);if(d<0)d+=1440;return d;}
 function fmtD(m){if(!m)return '--';var h=Math.floor(m/60),mn=m%60;return mn>0?h+'h'+String(mn).padStart(2,'0'):h+'h';}
-function totalDay(key){var d=data[key];if(!d||!d.seg)return 0;return d.seg.reduce(function(s,g){return s+(calcDur(g.s,g.e)||0);},0);}
+function totalDay(key){var d=data[key];if(!d)return 0;if(d.fullDay)return 480;if(!d.seg)return 0;return d.seg.reduce(function(s,g){return s+(calcDur(g.s,g.e)||0);},0);}
 function getOrCreate(k){if(!data[k])data[k]={seg:[{s:null,e:null}],note:'',photos:[]};if(!data[k].photos)data[k].photos=[];return data[k];}
 function isWE(d){return d.getDay()===0||d.getDay()===6;}
 function isNight(key){var d=data[key];if(!d||!d.seg)return false;return d.seg.some(function(g){if(!g.e)return false;var t=pt(g.e);return t.h>=22||t.h<5;});}
