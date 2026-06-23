@@ -2049,6 +2049,12 @@ function fmtEcart(mins){
 }
 function repMode(m){reportMode=m;renderReport();}
 
+
+function $el(id){return document.getElementById(id);}
+function $show(id){var e=document.getElementById(id);if(e)e.style.display='';}
+function $hide(id){var e=document.getElementById(id);if(e)e.style.display='none';}
+function $flex(id){var e=document.getElementById(id);if(e)e.style.display='flex';}
+
 // ── SUPABASE AUTH ─────────────────────────────────────────────────────────
 var _sb = null;
 var _authMode = 'login';
@@ -2125,6 +2131,7 @@ async function authSubmit(){
     } else {
       var r=await sb.auth.signInWithPassword({email:email,password:pwd});
       if(r.error)throw r.error;
+      localStorage.setItem('kb_last_email',email);
       await authOnLogin(r.data.user);
     }
   } catch(e){
@@ -2151,8 +2158,8 @@ async function authOnLogin(user){
   // Comptes admin — accès illimité
   var ADMIN_EMAILS=['kronobus@gmail.com'];
   if(ADMIN_EMAILS.indexOf(user.email)>-1){
-    document.getElementById('auth-screen').style.display='none';
-    document.getElementById('paywall-screen').style.display='none';
+    $hide('auth-screen');
+    $hide('paywall-screen');
     bootApp();
     return;
   }
@@ -2169,17 +2176,18 @@ async function authOnLogin(user){
       await sb.from('profiles').insert({id:user.id,email:user.email,trial_end:te.toISOString(),status:'trial'});
       isTrial=true;
     }
-    document.getElementById('auth-screen').style.display='none';
-    document.getElementById('paywall-screen').style.display='none';
+    var _as=document.getElementById('auth-screen');
+    var _pw=document.getElementById('paywall-screen');
+    if(_as)_as.style.display='none';
     if(isPaid||isTrial){
       bootApp();
     } else {
-      document.getElementById('paywall-screen').style.display='flex';
+      if(_pw)_pw.style.display='flex';
     }
   } catch(e){
     // En cas d'erreur Supabase — lancer l'app quand même si session valide
     console.log('Profile error:',e.message);
-    document.getElementById('auth-screen').style.display='none';
+    $hide('auth-screen');
     bootApp();
   }
 }
@@ -2187,9 +2195,9 @@ async function authOnLogin(user){
 async function authSignOut(){
   var sb=getSB();
   await sb.auth.signOut();
-  document.getElementById('paywall-screen').style.display='none';
-  document.getElementById('main-app').style.display='none';
-  document.getElementById('auth-screen').style.display='flex';
+  $hide('paywall-screen');
+  $hide('main-app');
+  $flex('auth-screen');
   authTab('login');
 }
 
@@ -2200,11 +2208,18 @@ async function initAuth(){
   }
   function showAuth(){
     showSplash(true);
-    document.getElementById('auth-screen').style.display='flex';
-    document.getElementById('paywall-screen').style.display='none';
-    document.getElementById('main-app').style.display='none';
+    var as=document.getElementById('auth-screen');
+    if(as)as.style.display='flex';
+    var pw=document.getElementById('paywall-screen');
+    if(pw)pw.style.display='none';
+    var app=document.getElementById('main-app');
+    if(app)app.style.display='none';
     var tb=document.getElementById('main-tabbar');
     if(tb)tb.style.display='none';
+    // Pré-remplir le dernier email utilisé
+    var lastEmail=localStorage.getItem('kb_last_email');
+    var emailEl=document.getElementById('auth-email');
+    if(lastEmail&&emailEl&&!emailEl.value)emailEl.value=lastEmail;
   }
 
   var sb=getSB();
@@ -2229,7 +2244,7 @@ async function initAuth(){
 
   sb.auth.onAuthStateChange(async function(event,session){
     if(event==='SIGNED_IN'&&session){
-      document.getElementById('auth-screen').style.display='none';
+      $hide('auth-screen');
       await authOnLogin(session.user);
     } else if(event==='SIGNED_OUT'){
       showAuth();
@@ -2238,18 +2253,20 @@ async function initAuth(){
 }
 
 function bootApp(){
-  document.getElementById('auth-screen').style.display='none';
-  document.getElementById('paywall-screen').style.display='none';
+  var as=document.getElementById('auth-screen');
+  var pw=document.getElementById('paywall-screen');
   var app=document.getElementById('main-app');
-  if(app)app.style.display='';
   var tb=document.getElementById('main-tabbar');
-  if(tb)tb.style.display='';
   var sp=document.getElementById('splash');
+  if(as)as.style.display='none';
+  if(pw)pw.style.display='none';
+  if(app)app.style.display='';
+  if(tb)tb.style.display='';
   if(sp)sp.classList.add('hide');
-  loadData();
-  render();
-  initDailyHeader();
-  initOnboard();
+  try{loadData();}catch(e){console.log('loadData err',e);}
+  try{render();}catch(e){console.log('render err',e);}
+  try{initDailyHeader();}catch(e){console.log('header err',e);}
+  try{initOnboard();}catch(e){console.log('onboard err',e);}
 }
 
 
