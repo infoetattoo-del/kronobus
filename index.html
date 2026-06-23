@@ -653,18 +653,8 @@ function renderDay(){
       fE=Math.floor(t1/60)+':'+(t1%60<10?'0':'')+t1%60;
     }
   }
-  if(tot>0){
-    // Progress circles
-    var maxWork=600; // 10h legal max
-    var maxAmp=720;  // 12h legal max amplitude
-    var pctWork=Math.min(Math.round((tot/maxWork)*100),100);
-    var pctAmp=ampJ?Math.min(Math.round((ampJ/maxAmp)*100),100):0;
-    var r=44,circ=2*Math.PI*r;
-    var dashWork=circ*(pctWork/100),dashAmp=circ*(pctAmp/100);
-    var colWork=pctWork>=100?'#f43f5e':pctWork>=80?'#FF9500':'#1b2cc1';
-    var colAmp=pctAmp>=100?'#f43f5e':pctAmp>=80?'#FF9500':'#0891b2';
-    // ── Toggle Heures / Jour entier
-    h+='<div style="display:flex;background:rgba(27,44,193,.07);border-radius:14px;padding:3px;margin-bottom:14px;gap:3px">';
+  // ── Toggle Heures / Jour entier — toujours visible
+  h+='<div style="display:flex;background:rgba(27,44,193,.07);border-radius:14px;padding:3px;margin-bottom:14px;gap:3px">';
     h+='<button onclick="setFullDay(\''+key+'\',false)" style="flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+(isFD?'transparent':'#1b2cc1')+';color:'+(isFD?'#6e6e73':'#fff')+';box-shadow:'+(isFD?'none':'0 3px 10px rgba(27,44,193,.3)')+'">Heures</button>';
     h+='<button onclick="setFullDay(\''+key+'\',true)" style="flex:1;padding:9px;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+(isFD?'#1b2cc1':'transparent')+';color:'+(isFD?'#fff':'#6e6e73')+';box-shadow:'+(isFD?'0 3px 10px rgba(27,44,193,.3)':'none')+'">Jour entier</button>';
     h+='</div>';
@@ -674,7 +664,17 @@ function renderDay(){
       h+='<div style="font-size:17px;font-weight:800;color:#1b2cc1">Journée complète</div>';
       h+='<div style="font-size:12px;color:#6e6e73;margin-top:6px">1 jour travaillé comptabilisé</div>';
       h+='</div>';
-    } else {
+    } else { // mode heures
+    if(tot>0){
+    // Progress circles
+    var maxWork=600;
+    var maxAmp=720;
+    var pctWork=Math.min(Math.round((tot/maxWork)*100),100);
+    var pctAmp=ampJ?Math.min(Math.round((ampJ/maxAmp)*100),100):0;
+    var r=44,circ=2*Math.PI*r;
+    var dashWork=circ*(pctWork/100),dashAmp=circ*(pctAmp/100);
+    var colWork=pctWork>=100?'#f43f5e':pctWork>=80?'#FF9500':'#1b2cc1';
+    var colAmp=pctAmp>=100?'#f43f5e':pctAmp>=80?'#FF9500':'#0891b2';
     h+='<div class="total-card">';
     h+='<div class="card-lbl" style="font-size:13px;font-weight:800;color:#1d1d1f;letter-spacing:.3px">TOTAL JOURNÉE'+(we?' · WEEK-END':'')+'</div>';
     // SVG circles row
@@ -725,8 +725,8 @@ function renderDay(){
       h+='</div>';
     }
     h+="</div>";
-  }
-
+  } // fin if(tot>0)
+  // Segments
   if(!isFD){
   var pastelClasses=['card-amp-0','card-amp-1','card-amp-2','card-amp-3','card-amp-4'];
   rec.seg.forEach(function(sg,i){
@@ -753,7 +753,7 @@ function renderDay(){
     h+='<button class="pbtn pin" style="margin-top:8px" onclick="addSeg(\''+key+'\')">';
   h+='+ Ajouter un temps de travail</button>';
   } // fin boucle seg
-  } // fin if(!isFD)
+  } // fin if(!isFD) et else
 
   
   // ── Bloc jour off
